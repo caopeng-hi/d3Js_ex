@@ -87,7 +87,7 @@ onMounted(() => {
           .style("stroke-width", 1)
           .attr("filter", null);
         removeGroupLabel(d, i);
-        // tooltipTimer();
+        tooltipTimer();
       })
       .on("click", function (d, i) {
         showProvinceMap();
@@ -189,110 +189,110 @@ onMounted(() => {
       }
     }, 3000);
   };
-  // tooltipTimer();
-  // const flightsData = [
-  //   {
-  //     source: { x: 116.41995, y: 40.18994 },
-  //     target: { x: 120.109913, y: 29.181466 },
-  //   },
-  // ];
-  // const lineGenerator = d3
-  //   .line()
-  //   .x((d) => d.x)
-  //   .y((d) => d.y)
-  //   .curve(d3.curveBasis); // 使用曲线生成器
-  // svg
-  //   .selectAll("path.flight")
-  //   .data(flightsData)
-  //   .enter()
-  //   .append("path")
-  //   .attr("class", "flight")
-  //   .attr("d", (d) => {
-  //     // 为每个飞线生成路径
-  //     const [sX, sY] = mercator([d.source.x, d.source.y]);
-  //     const [tX, tY] = mercator([d.target.x, d.target.y]);
-  //     const pathData = [
-  //       { x: sX, y: sY },
-  //       { x: (sX + tX) / 2, y: tY },
-  //       { x: tX, y: tY },
-  //     ];
-  //     return lineGenerator(pathData);
-  //   })
-  //   .style("fill", "none")
-  //   .style("stroke", "aqua")
-  //   .style("stroke-width", 2);
+  tooltipTimer();
+  const flightsData = [
+    {
+      source: { x: 116.41995, y: 40.18994 },
+      target: { x: 120.109913, y: 29.181466 },
+    },
+  ];
+  const lineGenerator = d3
+    .line()
+    .x((d) => d.x)
+    .y((d) => d.y)
+    .curve(d3.curveBasis); // 使用曲线生成器
+  svg
+    .selectAll("path.flight")
+    .data(flightsData)
+    .enter()
+    .append("path")
+    .attr("class", "flight")
+    .attr("d", (d) => {
+      // 为每个飞线生成路径
+      const [sX, sY] = mercator([d.source.x, d.source.y]);
+      const [tX, tY] = mercator([d.target.x, d.target.y]);
+      const pathData = [
+        { x: sX, y: sY },
+        { x: (sX + tX) / 2, y: tY },
+        { x: tX, y: tY },
+      ];
+      return lineGenerator(pathData);
+    })
+    .style("fill", "none")
+    .style("stroke", "aqua")
+    .style("stroke-width", 2);
 
-  // 添加一个小圆
-  // const circle = svg.append("circle").attr("r", 5).style("fill", "red");
+  添加一个小圆;
+  const circle = svg.append("circle").attr("r", 5).style("fill", "red");
 
-  // 计算路径长度并设置动画
-  // const flightPaths = svg.selectAll("path.flight");
-  // flightPaths.each(function (d) {
-  //   const path = d3.select(this);
-  //   // 动画函数
-  //   function animateCircle() {
-  //     circle
-  //       .attr("transform", `translate(${d.source.x},${d.source.y})`)
-  //       .transition()
-  //       .duration(2000)
-  //       .attrTween("transform", translateAlong(path.node()))
-  //       .on("end", () => {
-  //         // 反向动画
-  //         circle
-  //           .transition()
-  //           .duration(2000)
-  //           .attrTween("transform", translateAlong(path.node(), true))
-  //           .on("end", animateCircle); // 递归调用以持续动画
-  //       });
-  //   }
+  计算路径长度并设置动画;
+  const flightPaths = svg.selectAll("path.flight");
+  flightPaths.each(function (d) {
+    const path = d3.select(this);
+    // 动画函数
+    function animateCircle() {
+      circle
+        .attr("transform", `translate(${d.source.x},${d.source.y})`)
+        .transition()
+        .duration(2000)
+        .attrTween("transform", translateAlong(path.node()))
+        .on("end", () => {
+          // 反向动画
+          circle
+            .transition()
+            .duration(2000)
+            .attrTween("transform", translateAlong(path.node(), true))
+            .on("end", animateCircle); // 递归调用以持续动画
+        });
+    }
 
-  //   // 开始动画
-  //   animateCircle();
+    // 开始动画
+    animateCircle();
 
-  //   // 插值函数，用于沿着路径移动小圆
-  //   function translateAlong(path, reverse = false) {
-  //     const l = path.getTotalLength();
-  //     return function (d, i, a) {
-  //       return function (t) {
-  //         const p = path.getPointAtLength(reverse ? l * (1 - t) : l * t);
-  //         return `translate(${p.x},${p.y})`;
-  //       };
-  //     };
-  //   }
-  // });
+    // 插值函数，用于沿着路径移动小圆
+    function translateAlong(path, reverse = false) {
+      const l = path.getTotalLength();
+      return function (d, i, a) {
+        return function (t) {
+          const p = path.getPointAtLength(reverse ? l * (1 - t) : l * t);
+          return `translate(${p.x},${p.y})`;
+        };
+      };
+    }
+  });
 
-  // 创建一个圆圈
-  // const [cX, cY] = mercator([117.226884, 31.849254]);
-  // const shiB = svg
-  //   .append("circle")
-  //   .attr("cx", cX)
-  //   .attr("cy", cY)
-  //   .attr("r", 10)
-  //   .style("fill", "blue")
-  //   .style("opacity", 0.5);
+  创建一个圆圈;
+  const [cX, cY] = mercator([117.226884, 31.849254]);
+  const shiB = svg
+    .append("circle")
+    .attr("cx", cX)
+    .attr("cy", cY)
+    .attr("r", 10)
+    .style("fill", "blue")
+    .style("opacity", 0.5);
 
-  // 创建水波纹效果的函数
-  // function createRipple() {
-  //   const ripple = svg
-  //     .append("circle")
-  //     .attr("cx", cX)
-  //     .attr("cy", cY)
-  //     .attr("r", 0)
-  //     .style("fill", "blue")
-  //     .style("opacity", 0.3);
+  创建水波纹效果的函数;
+  function createRipple() {
+    const ripple = svg
+      .append("circle")
+      .attr("cx", cX)
+      .attr("cy", cY)
+      .attr("r", 0)
+      .style("fill", "blue")
+      .style("opacity", 0.3);
 
-  //   ripple
-  //     .transition()
-  //     .duration(2000)
-  //     .attr("r", 40)
-  //     .style("opacity", 0)
-  //     .on("end", function () {
-  //       d3.select(this).remove();
-  //     });
+    ripple
+      .transition()
+      .duration(2000)
+      .attr("r", 40)
+      .style("opacity", 0)
+      .on("end", function () {
+        d3.select(this).remove();
+      });
 
-  //   setTimeout(createRipple, 500);
-  // }
-  // createRipple();
+    setTimeout(createRipple, 500);
+  }
+  createRipple();
 });
 function onGroupLabel(e, d) {
   const mouseX = e.pageX - 150;
