@@ -16,5 +16,13 @@ export default [
         meta: {
             title: '饼图',
         }
+    },
+    {
+        path: '/chain_chart',
+        name: 'chain_chart',
+        component: () => import('@/views/chain_chart/index.vue'),
+        meta: {
+            title: '全国地图',
+        }
     }
 ]
