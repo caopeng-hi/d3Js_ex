@@ -1,7 +1,12 @@
 <template>
   <div class="app-content">
     <div class="side-bar">
-      <div class="side-bar-item" v-for="item in sideBar" :key="item.path">
+      <div
+        class="side-bar-item"
+        @click="$router.push(item.path)"
+        v-for="item in sideBar"
+        :key="item.path"
+      >
         {{ item.name }}
       </div>
     </div>
