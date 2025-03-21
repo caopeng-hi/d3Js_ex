@@ -24,5 +24,13 @@ export default [
         meta: {
             title: '全国地图',
         }
+    },
+    {
+        path: '/histogram_chart',
+        name: 'histogram_chart',
+        component: () => import('@/views/histogram_chart/index.vue'),
+        meta: {
+            title: '柱状图',
+        }
     }
 ]
