@@ -222,10 +222,10 @@ onMounted(() => {
     .style("stroke", "aqua")
     .style("stroke-width", 2);
 
-  添加一个小圆;
+  // 添加一个小圆;
   const circle = svg.append("circle").attr("r", 5).style("fill", "red");
 
-  计算路径长度并设置动画;
+  //计算路径长度并设置动画;
   const flightPaths = svg.selectAll("path.flight");
   flightPaths.each(function (d) {
     const path = d3.select(this);
@@ -261,7 +261,7 @@ onMounted(() => {
     }
   });
 
-  创建一个圆圈;
+  //创建一个圆圈;
   const [cX, cY] = mercator([117.226884, 31.849254]);
   const shiB = svg
     .append("circle")
@@ -271,7 +271,7 @@ onMounted(() => {
     .style("fill", "blue")
     .style("opacity", 0.5);
 
-  创建水波纹效果的函数;
+  // 创建水波纹效果的函数;
   function createRipple() {
     const ripple = svg
       .append("circle")
