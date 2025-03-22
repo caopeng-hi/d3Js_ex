@@ -10,6 +10,14 @@ export default [
         }
     },
     {
+        path: '/lines_chart',
+        name: 'lines_chart',
+        component: () => import('@/views/lines_chart/index.vue'),
+        meta: {
+            title: '多折线图',
+        }
+    },
+    {
         path: '/pai_chart',
         name: 'pai_chart',
         component: () => import('@/views/pai_chart/index.vue'),
