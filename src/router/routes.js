@@ -40,5 +40,13 @@ export default [
         meta: {
             title: '柱状图',
         }
+    },
+    {
+        path: '/radar_chart',
+        name: 'radar_chart',
+        component: () => import('@/views/radar_chart/index.vue'),
+        meta: {
+            title: '雷达图',
+        }
     }
 ]
