@@ -97,6 +97,7 @@ onMounted(() => {
     .attr("stroke", "#69b3a2")
     .attr("stroke-width", 1.5)
     .attr("d", line);
+
   // 添加面积
   g.append("path")
     .datum(data)
@@ -110,6 +111,18 @@ onMounted(() => {
       // 鼠标移出时，恢复透明度
       d3.select(this).attr("fill-opacity", 1);
     });
+
+  // 添加数据点的小圆圈
+  g.selectAll("circle")
+    .data(data)
+    .enter()
+    .append("circle")
+    .attr("cx", (d) => x(d.date))
+    .attr("cy", (d) => y(d.value))
+    .attr("r", 4) // 圆圈半径
+    .attr("fill", "white") // 白色背景色
+    .attr("stroke", "black") // 黑色边框
+    .attr("stroke-width", 1); // 边框宽度
 });
 </script>
 
