@@ -51,10 +51,10 @@ onMounted(() => {
 
   // 定义 x 轴比例尺
   const x = d3
-    .scaleBand()
+    .scalePoint()
     .domain(data.map((d) => d.date))
     .range([0, width])
-    .padding(0.1);
+    .padding(0.01);
 
   // 定义 y 轴比例尺
   const y = d3
@@ -82,7 +82,7 @@ onMounted(() => {
   const area = d3
     .area()
     .x((d) => x(d.date))
-    .y0(height)
+    .y0(y(0)) // 修改此处，让面积区域底部从 x 轴开始
     .y1((d) => y(d.value));
 
   // 定义折线生成器
