@@ -104,12 +104,12 @@ onMounted(() => {
     .attr("fill", "#cce5df")
     .attr("d", area)
     .on("mouseover", function () {
-      // 鼠标悬停时，改变透明度为 0.8
-      d3.select(this).attr("fill-opacity", 0.8);
+      // 鼠标悬停时，改变透明度为 0.8，修改鼠标样式为小手
+      d3.select(this).attr("fill-opacity", 0.8).style("cursor", "pointer");
     })
     .on("mouseout", function () {
-      // 鼠标移出时，恢复透明度
-      d3.select(this).attr("fill-opacity", 1);
+      // 鼠标移出时，恢复透明度和鼠标样式
+      d3.select(this).attr("fill-opacity", 1).style("cursor", "default");
     });
 
   // 添加数据点的小圆圈
@@ -122,7 +122,20 @@ onMounted(() => {
     .attr("r", 4) // 圆圈半径
     .attr("fill", "white") // 白色背景色
     .attr("stroke", "black") // 黑色边框
-    .attr("stroke-width", 1); // 边框宽度
+    .attr("stroke-width", 1) // 边框宽度
+    .on("mouseover", function () {
+      d3.select(this)
+        .transition() // 开启过渡动画
+        .duration(200) // 动画持续时间
+        .attr("r", 4 * 1.2) // 半径扩大 1.2 倍
+        .style("cursor", "pointer");
+    })
+    .on("mouseout", function () {
+      d3.select(this)
+        .transition() // 开启过渡动画
+        .duration(200) // 动画持续时间
+        .attr("r", 4); // 恢复原来半径
+    });
 });
 </script>
 
