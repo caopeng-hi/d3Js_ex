@@ -62,6 +62,22 @@ onMounted(() => {
     .domain([0, d3.max(data, (d) => d.value)])
     .range([height, 0]);
 
+  // 添加 x 轴
+  svg
+    .append("g")
+    .attr("transform", `translate(${margin.left},${height + margin.top})`)
+    .call(d3.axisBottom(x));
+
+  // 添加 y 轴
+  svg
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`)
+    .call(d3.axisLeft(y));
+
+  const g = svg
+    .append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
   // 定义面积生成器
   const area = d3
     .area()
@@ -74,30 +90,16 @@ onMounted(() => {
     .line()
     .x((d) => x(d.date))
     .y((d) => y(d.value));
-
-  // 添加面积
-  svg.append("path").datum(data).attr("fill", "#cce5df").attr("d", area);
-
   // 添加折线
-  svg
-    .append("path")
+  g.append("path")
     .datum(data)
     .attr("fill", "none")
     .attr("stroke", "#69b3a2")
     .attr("stroke-width", 1.5)
     .attr("d", line);
-
-  // 添加 x 轴
-  svg
-    .append("g")
-    .attr("transform", `translate(0,${height})`)
-    .call(d3.axisBottom(x));
-
-  // 添加 y 轴
-  svg.append("g").call(d3.axisLeft(y));
+  // 添加面积
+  g.append("path").datum(data).attr("fill", "#cce5df").attr("d", area);
 });
 </script>
 
-<style lang="scss" scoped>
-/* 可以添加一些样式来美化图表 */
-</style>
+<style lang="scss" scoped></style>
