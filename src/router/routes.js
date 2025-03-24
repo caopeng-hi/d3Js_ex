@@ -1,3 +1,10 @@
+/*
+ * @Author: caopeng
+ * @Date: 2025-03-20 17:04:56
+ * @LastEditors: 
+ * @LastEditTime: 2025-03-24 09:03:41
+ * @Description: 请填写简介
+ */
 
 
 export default [
@@ -15,6 +22,14 @@ export default [
         component: () => import('@/views/lines_chart/index.vue'),
         meta: {
             title: '多折线图',
+        }
+    },
+    {
+        path: '/lines_area_chart',
+        name: 'lines_area_chart',
+        component: () => import('@/views/lines_area_chart/index.vue'),
+        meta: {
+            title: '折线面积图',
         }
     },
     {
