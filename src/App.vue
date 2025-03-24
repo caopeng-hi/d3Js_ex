@@ -1,8 +1,16 @@
+<!--
+ * @Author: caopeng
+ * @Date: 2025-03-20 16:59:38
+ * @LastEditors: 
+ * @LastEditTime: 2025-03-24 10:18:58
+ * @Description: 请填写简介
+-->
 <template>
   <div class="app-content">
     <div class="side-bar">
       <div
         class="side-bar-item"
+        :class="{ 'is-active': $route.path === item.path }"
         @click="$router.push(item.path)"
         v-for="item in sideBar"
         :key="item.path"
@@ -53,6 +61,10 @@ const sideBar = routes.map((it) => {
         color: #2e9ffc;
       }
     }
+  }
+  .is-active {
+    background-color: #666;
+    color: #2e9ffc;
   }
   .main {
     flex: 1;
