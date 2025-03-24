@@ -98,7 +98,18 @@ onMounted(() => {
     .attr("stroke-width", 1.5)
     .attr("d", line);
   // 添加面积
-  g.append("path").datum(data).attr("fill", "#cce5df").attr("d", area);
+  g.append("path")
+    .datum(data)
+    .attr("fill", "#cce5df")
+    .attr("d", area)
+    .on("mouseover", function () {
+      // 鼠标悬停时，改变透明度为 0.8
+      d3.select(this).attr("fill-opacity", 0.8);
+    })
+    .on("mouseout", function () {
+      // 鼠标移出时，恢复透明度
+      d3.select(this).attr("fill-opacity", 1);
+    });
 });
 </script>
 
