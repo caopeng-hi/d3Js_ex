@@ -64,10 +64,40 @@ onMounted(() => {
         .attr("filter", "none");
     });
 
+  // 添加引线和外部文字
+  arcs
+    .append("polyline")
+    .attr("points", (d) => {
+      const pos = arc.centroid(d);
+      const midAngle = Math.atan2(pos[1], pos[0]);
+      const outerPos = [
+        Math.cos(midAngle) * (radius + 20),
+        Math.sin(midAngle) * (radius + 20),
+      ];
+      return [pos, outerPos].join(" ");
+    })
+    .attr("fill", "none")
+    .attr("stroke", (d) => color(d.data.name)) // 修改引线颜色为对应的饼图颜色
+    .attr("stroke-width", 1);
+
   arcs
     .append("text")
-    .attr("transform", (d) => `translate(${arc.centroid(d)})`)
-    .attr("text-anchor", "middle")
+    .attr("transform", (d) => {
+      const pos = arc.centroid(d);
+      const midAngle = Math.atan2(pos[1], pos[0]);
+      const outerPos = [
+        Math.cos(midAngle) * (radius + 30),
+        Math.sin(midAngle) * (radius + 30),
+      ];
+      return `translate(${outerPos})`;
+    })
+    .attr("text-anchor", (d) => {
+      const pos = arc.centroid(d);
+      const midAngle = Math.atan2(pos[1], pos[0]);
+      return midAngle > Math.PI / 2 || midAngle < -Math.PI / 2
+        ? "end"
+        : "start";
+    })
     .text((d) => d.data.name);
 
   // 左上角绘制图形图例
