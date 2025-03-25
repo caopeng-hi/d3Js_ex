@@ -165,4 +165,29 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 /* 可以添加样式来美化饼图 */
+.arc path {
+  transition: all 0.3s ease; /* 添加过渡效果 */
+}
+
+.arc path:hover {
+  fill-opacity: 0.8; /* 鼠标悬停时降低填充不透明度 */
+}
+
+.legend-item rect {
+  transition: all 0.3s ease; /* 图例方块过渡效果 */
+}
+
+.legend-item rect:hover {
+  fill-opacity: 0.8; /* 图例方块鼠标悬停时降低填充不透明度 */
+}
+
+.legend-item text {
+  font-family: Arial, sans-serif; /* 设置图例文字字体 */
+  font-size: 12px; /* 设置图例文字大小 */
+  fill: #333; /* 设置图例文字颜色 */
+}
+
+.polyline {
+  stroke-linecap: round; /* 设置引线端点为圆角 */
+}
 </style>
