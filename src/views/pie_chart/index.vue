@@ -14,18 +14,18 @@ const data = [
   { value: 484, name: "Union Ads" },
   { value: 300, name: "Video Ads" },
 ];
-
+const width = 400;
+const height = 400;
+const radius = Math.min(width, height) / 2;
+const margin = { top: 120, right: 20, bottom: 30, left: 150 };
+let svg;
 onMounted(() => {
-  const width = 400;
-  const height = 400;
-  const radius = Math.min(width, height) / 2;
-
-  const svg = d3
-    .select(pieChart.value)
-    .attr("width", width)
-    .attr("height", height)
+  svg = d3.select(pieChart.value);
+  svg
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
     .append("g")
-    .attr("transform", `translate(${width / 2},${height / 2})`);
+    .attr("transform", `translate(${margin.left},${margin.top})`);
 
   const color = d3.scaleOrdinal(d3.schemeCategory10);
 
@@ -37,7 +37,11 @@ onMounted(() => {
     .data(pie(data))
     .enter()
     .append("g")
-    .attr("class", "arc");
+    .attr("class", "arc")
+    .attr(
+      "transform",
+      `translate(${width / 2 + margin.left},${height / 2 + margin.top})`
+    );
 
   arcs
     .append("path")
