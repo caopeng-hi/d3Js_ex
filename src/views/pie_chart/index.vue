@@ -17,7 +17,7 @@ const data = [
 const width = 400;
 const height = 400;
 const radius = Math.min(width, height) / 2;
-const margin = { top: 120, right: 20, bottom: 30, left: 150 };
+const margin = { top: 120, right: 120, bottom: 30, left: 150 };
 let svg;
 onMounted(() => {
   svg = d3.select(pieChart.value);
@@ -74,6 +74,7 @@ onMounted(() => {
         Math.cos(midAngle) * (radius + 20),
         Math.sin(midAngle) * (radius + 20),
       ];
+
       return [pos, outerPos].join(" ");
     })
     .attr("fill", "none")
