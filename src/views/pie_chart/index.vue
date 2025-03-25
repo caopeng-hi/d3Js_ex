@@ -120,14 +120,46 @@ onMounted(() => {
     .attr("height", 18)
     .attr("rx", 4) // 设置水平圆角半径
     .attr("ry", 4) // 设置垂直圆角半径
-    .attr("fill", (d) => color(d.name));
+    .attr("fill", (d) => color(d.name))
+    .on("mouseover", function (event, d) {
+      const targetPath = paths.filter((p) => p.data.name === d.name);
+      targetPath
+        .transition()
+        .duration(700)
+        .attr("transform", "scale(1.05) translate(0, 0)")
+        .attr("filter", "drop-shadow(0px 0 10px rgba(0, 0, 0, .8))");
+    })
+    .on("mouseout", function (event, d) {
+      const targetPath = paths.filter((p) => p.data.name === d.name);
+      targetPath
+        .transition()
+        .duration(700)
+        .attr("transform", "scale(1) translate(0, 0)")
+        .attr("filter", "none");
+    });
 
   legendItems
     .append("text")
     .attr("x", 24)
     .attr("y", 9)
     .attr("dy", ".35em")
-    .text((d) => d.name);
+    .text((d) => d.name)
+    .on("mouseover", function (event, d) {
+      const targetPath = paths.filter((p) => p.data.name === d.name);
+      targetPath
+        .transition()
+        .duration(700)
+        .attr("transform", "scale(1.05) translate(0, 0)")
+        .attr("filter", "drop-shadow(0px 0 10px rgba(0, 0, 0, .8))");
+    })
+    .on("mouseout", function (event, d) {
+      const targetPath = paths.filter((p) => p.data.name === d.name);
+      targetPath
+        .transition()
+        .duration(700)
+        .attr("transform", "scale(1) translate(0, 0)")
+        .attr("filter", "none");
+    });
 });
 </script>
 
