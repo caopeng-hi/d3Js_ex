@@ -1,8 +1,8 @@
 /*
  * @Author: caopeng
  * @Date: 2025-03-20 17:04:56
- * @LastEditors: 
- * @LastEditTime: 2025-03-24 09:03:41
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2025-03-25 09:03:51
  * @Description: 请填写简介
  */
 
@@ -37,7 +37,15 @@ export default [
         name: 'pai_chart',
         component: () => import('@/views/pai_chart/index.vue'),
         meta: {
-            title: '饼图',
+            title: '环形图',
+        }
+    },
+    {
+        path: '/pie_chart',
+        name: 'pie_chart',
+        component: () => import('@/views/pie_chart/index.vue'),
+        meta: {
+            title: '饼形图',
         }
     },
     {
