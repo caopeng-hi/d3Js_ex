@@ -47,14 +47,44 @@ onMounted(() => {
   const paths = arcs
     .append("path")
     .attr("d", arc)
-    .attr("fill", (d) => color(d.data.name))
+    .attr("fill", (d) => color(d.data.name));
+
+  // 创建 tooltip
+  const tooltip = svg.append("g").attr("class", "tooltip").style("opacity", 0);
+
+  tooltip
+    .append("rect")
+    .attr("width", 100)
+    .attr("height", 30)
+    .attr("fill", "white")
+    .style("stroke", "black")
+    .style("stroke-width", 1);
+
+  tooltip
+    .append("text")
+    .attr("x", 50)
+    .attr("y", 20)
+    .attr("text-anchor", "middle")
+    .style("font-size", "12px");
+
+  paths
     // 添加鼠标悬停事件
-    .on("mouseover", function () {
+    .on("mouseover", function (event, d) {
       d3.select(this)
         .transition()
         .duration(700)
         .attr("transform", "scale(1.05) translate(0, 0)")
         .attr("filter", "drop-shadow(0px 0 10px rgba(0, 0, 0, .8))");
+
+      // 显示 tooltip
+      tooltip.transition().duration(200).style("opacity", 1);
+
+      tooltip.select("text").text(`${d.data.name}: ${d.data.value}`);
+
+      tooltip.attr(
+        "transform",
+        `translate(${event.pageX - 50},${event.pageY - 30})`
+      );
     })
     .on("mouseout", function () {
       d3.select(this)
@@ -62,6 +92,9 @@ onMounted(() => {
         .duration(700)
         .attr("transform", "scale(1) translate(0, 0)")
         .attr("filter", "none");
+
+      // 隐藏 tooltip
+      tooltip.transition().duration(200).style("opacity", 0);
     });
 
   // 添加引线和外部文字
