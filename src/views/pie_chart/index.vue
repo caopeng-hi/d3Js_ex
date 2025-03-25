@@ -43,10 +43,28 @@ onMounted(() => {
       `translate(${width / 2 + margin.left},${height / 2 + margin.top})`
     );
 
-  arcs
+  // 绘制饼状图
+  const paths = arcs
     .append("path")
     .attr("d", arc)
-    .attr("fill", (d) => color(d.data.name));
+    .attr("fill", (d) => color(d.data.name))
+    // 添加鼠标悬停事件
+    .on("mouseover", function (event, d) {
+      d3.select(this)
+        .transition()
+        .duration(700)
+        // 放大 1.2 倍并上移 3 像素
+        .attr("transform", "scale(1.1) translate(0, -3)")
+        .attr("filter", "drop-shadow(10px 0 5px rgba(0, 0, 0, 0.5))");
+    })
+    .on("mouseout", function () {
+      d3.select(this)
+        .transition()
+        .duration(700)
+        // 恢复原状
+        .attr("transform", "scale(1) translate(0, 0)")
+        .attr("filter", "none");
+    });
 
   arcs
     .append("text")
