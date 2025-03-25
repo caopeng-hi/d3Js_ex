@@ -71,6 +71,8 @@ onMounted(() => {
     .attr("y", 0)
     .attr("width", 18)
     .attr("height", 18)
+    .attr("rx", 4) // 设置水平圆角半径
+    .attr("ry", 4) // 设置垂直圆角半径
     .attr("fill", (d) => color(d.name));
 
   legendItems
