@@ -53,6 +53,32 @@ onMounted(() => {
     .attr("transform", (d) => `translate(${arc.centroid(d)})`)
     .attr("text-anchor", "middle")
     .text((d) => d.data.name);
+
+  // 左上角绘制图形图例
+  const legend = svg.append("g").attr("transform", `translate(${50},${50})`);
+
+  const legendItems = legend
+    .selectAll(".legend-item")
+    .data(data)
+    .enter()
+    .append("g")
+    .attr("class", "legend-item")
+    .attr("transform", (d, i) => `translate(0,${i * 20})`);
+
+  legendItems
+    .append("rect")
+    .attr("x", 0)
+    .attr("y", 0)
+    .attr("width", 18)
+    .attr("height", 18)
+    .attr("fill", (d) => color(d.name));
+
+  legendItems
+    .append("text")
+    .attr("x", 24)
+    .attr("y", 9)
+    .attr("dy", ".35em")
+    .text((d) => d.name);
 });
 </script>
 
