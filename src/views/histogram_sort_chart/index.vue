@@ -51,6 +51,7 @@ onMounted(() => {
   function updateXAxisStyle() {
     xAxisG.selectAll("line").attr("stroke", "#aaa"); // 设置刻度线颜色为 #aaa
     xAxisG.selectAll("path").attr("stroke", "none"); // 取消 X 轴的横向线段
+    xAxisG.raise();
   }
   updateXAxisStyle();
 
