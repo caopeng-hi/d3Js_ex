@@ -132,11 +132,13 @@ onMounted(() => {
     // 更新数据标签
     labels
       .data(sortedData)
+      .attr("y", (d, i) => y(sortedLabels[i]) + y.bandwidth() / 2)
+      // 设置初始 x 位置为柱状图起始位置
+      .attr("x", 0)
+      .text((d) => d)
       .transition()
       .duration(1000)
-      .attr("y", (d, i) => y(sortedLabels[i]) + y.bandwidth() / 2)
-      .attr("x", (d) => x(d) + 5) // 使标签在更新后的柱状图右侧
-      .text((d) => d);
+      .attr("x", (d) => x(d) + 5);
   }
 
   // 初始更新
