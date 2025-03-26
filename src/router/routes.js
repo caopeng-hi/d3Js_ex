@@ -2,7 +2,7 @@
  * @Author: caopeng
  * @Date: 2025-03-20 17:04:56
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2025-03-25 09:03:51
+ * @LastEditTime: 2025-03-26 09:02:22
  * @Description: 请填写简介
  */
 
@@ -62,6 +62,14 @@ export default [
         component: () => import('@/views/histogram_chart/index.vue'),
         meta: {
             title: '柱状图',
+        }
+    },
+    {
+        path: '/histogram_sort_chart',
+        name: 'histogram_sort_chart',
+        component: () => import('@/views/histogram_sort_chart/index.vue'),
+        meta: {
+            title: '动态排序柱状图',
         }
     },
     {
