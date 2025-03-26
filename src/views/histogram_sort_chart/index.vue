@@ -3,6 +3,11 @@
 </template>
 
 <script setup>
+/**
+ *  1.需要增加柱状图排序动画
+ *   2.需要修改x轴刻度线的样式
+ */
+
 // 引入 d3 库，用于数据可视化
 import * as d3 from "d3";
 // 引入 Vue 的生命周期钩子函数，onMounted 用于在组件挂载后执行代码，onUnmounted 用于在组件卸载前执行清理操作
