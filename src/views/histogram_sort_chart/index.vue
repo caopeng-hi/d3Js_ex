@@ -43,6 +43,8 @@ onMounted(() => {
       .axisBottom(x)
       .tickSize(-height) // 设置刻度线长度为图标高度
       .tickSizeOuter(0) // 取消首尾刻度线额外的部分
+      // 修改刻度数量为 4
+      .ticks(4)
   );
 
   // 修改 X 轴刻度线和文本的样式
@@ -103,7 +105,7 @@ onMounted(() => {
       .domain([0, d3.max(data) * paddingFactor])
       .range([0, width]);
     // 更新 X 轴
-    xAxisG.call(d3.axisBottom(x));
+    xAxisG.call(d3.axisBottom(x).ticks(4));
     // 更新 X 轴样式
     updateXAxisStyle();
     // 更新柱状图
