@@ -46,9 +46,11 @@ onMounted(() => {
   );
 
   // 修改 X 轴刻度线和文本的样式
-  xAxisG.selectAll("line").attr("stroke", "#aaa"); // 设置刻度线颜色为 #aaa
-
-  xAxisG.selectAll("path").attr("stroke", "none"); // 取消 X 轴的横向线段
+  function updateXAxisStyle() {
+    xAxisG.selectAll("line").attr("stroke", "#aaa"); // 设置刻度线颜色为 #aaa
+    xAxisG.selectAll("path").attr("stroke", "none"); // 取消 X 轴的横向线段
+  }
+  updateXAxisStyle();
 
   // 添加 Y 轴
   yAxisG = svg.append("g").call(d3.axisLeft(y));
@@ -78,6 +80,8 @@ onMounted(() => {
       .range([0, width]);
     // 更新 X 轴
     xAxisG.call(d3.axisBottom(x));
+    // 更新 X 轴样式
+    updateXAxisStyle();
     // 调用更新函数
     update();
   }
@@ -98,6 +102,10 @@ onMounted(() => {
       .scaleLinear()
       .domain([0, d3.max(data) * paddingFactor])
       .range([0, width]);
+    // 更新 X 轴
+    xAxisG.call(d3.axisBottom(x));
+    // 更新 X 轴样式
+    updateXAxisStyle();
     // 更新柱状图
     bars
       .data(sortedData)
