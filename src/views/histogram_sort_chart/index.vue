@@ -29,10 +29,11 @@ onMounted(() => {
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
-  // 创建比例尺
+  // 创建比例尺，让 x 轴最大值大于 data 最大值
+  const paddingFactor = 1.2; // 调整此系数可改变 x 轴最大值超出 data 最大值的比例
   const x = d3
     .scaleLinear()
-    .domain([0, d3.max(data)])
+    .domain([0, d3.max(data) * paddingFactor]) // 这里将最大值乘以一个系数
     .range([0, width]);
   const y = d3.scaleBand().domain(label).range([0, height]).padding(0.1);
 
@@ -58,16 +59,15 @@ onMounted(() => {
     .attr("fill", "steelblue")
     .attr("width", 0);
 
-  // 定时器函数，每隔 3 秒增加数据并更新图表
   function tick() {
     // 随机增加数据
     for (let i = 0; i < data.length; i++) {
       data[i] += Math.round(Math.random() * 10);
     }
-    // 更新 X 轴比例尺
+    // 更新 X 轴比例尺，同样让最大值大于 data 最大值
     const x = d3
       .scaleLinear()
-      .domain([0, d3.max(data)]) // 根据 data 中的最大值更新 x 轴的定义域
+      .domain([0, d3.max(data) * paddingFactor])
       .range([0, width]);
     // 更新 X 轴
     xAxisG.call(d3.axisBottom(x));
@@ -86,10 +86,10 @@ onMounted(() => {
     y.domain(sortedLabels);
     // 更新 Y 轴
     yAxisG.call(d3.axisLeft(y));
-    // 更新 X 轴比例尺
+    // 更新 X 轴比例尺，保证最大值大于 data 最大值
     const x = d3
       .scaleLinear()
-      .domain([0, d3.max(data)]) // 根据 data 中的最大值更新 x 轴的定义域
+      .domain([0, d3.max(data) * paddingFactor])
       .range([0, width]);
     // 更新柱状图
     bars
