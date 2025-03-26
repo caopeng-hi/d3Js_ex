@@ -38,10 +38,17 @@ onMounted(() => {
   const y = d3.scaleBand().domain(label).range([0, height]).padding(0.1);
 
   // 添加 X 轴
-  xAxisG = svg
-    .append("g")
-    .attr("transform", `translate(0,${height})`)
-    .call(d3.axisBottom(x));
+  xAxisG = svg.append("g").attr("transform", `translate(0,${height})`).call(
+    d3
+      .axisBottom(x)
+      .tickSize(-height) // 设置刻度线长度为图标高度
+      .tickSizeOuter(0) // 取消首尾刻度线额外的部分
+  );
+
+  // 修改 X 轴刻度线和文本的样式
+  xAxisG.selectAll("line").attr("stroke", "#aaa"); // 设置刻度线颜色为 #aaa
+
+  xAxisG.selectAll("path").attr("stroke", "none"); // 取消 X 轴的横向线段
 
   // 添加 Y 轴
   yAxisG = svg.append("g").call(d3.axisLeft(y));
