@@ -4,7 +4,7 @@
 
 <script setup>
 import * as d3 from "d3";
-import { onMounted } from "vue";
+import { onMounted, onUnmounted } from "vue";
 
 let svg;
 const label = ["A", "B", "C", "D", "E"];
@@ -16,6 +16,10 @@ for (let i = 0; i < label.length; ++i) {
 const margin = { top: 20, right: 20, bottom: 30, left: 40 };
 const width = 600 - margin.left - margin.right;
 const height = 400 - margin.top - margin.bottom;
+
+let timer;
+let xAxisG; // 新增：用于存储 x 轴的 g 元素
+let yAxisG; // 新增：用于存储 y 轴的 g 元素
 
 onMounted(() => {
   svg = d3
@@ -33,13 +37,13 @@ onMounted(() => {
   const y = d3.scaleBand().domain(label).range([0, height]).padding(0.1);
 
   // 添加 X 轴
-  svg
+  xAxisG = svg
     .append("g")
     .attr("transform", `translate(0,${height})`)
     .call(d3.axisBottom(x));
 
   // 添加 Y 轴
-  svg.append("g").call(d3.axisLeft(y));
+  yAxisG = svg.append("g").call(d3.axisLeft(y));
 
   // 创建柱状图
   const bars = svg
@@ -51,6 +55,7 @@ onMounted(() => {
     .attr("y", (d, i) => y(label[i]))
     .attr("height", y.bandwidth())
     .attr("x", 0)
+    .attr("fill", "steelblue")
     .attr("width", 0);
 
   // 动态排序和更新柱状图
@@ -65,7 +70,7 @@ onMounted(() => {
     y.domain(sortedLabels);
 
     // 更新 Y 轴
-    svg.selectAll("g.y-axis").call(d3.axisLeft(y));
+    yAxisG.call(d3.axisLeft(y));
 
     // 更新柱状图
     bars
@@ -76,11 +81,33 @@ onMounted(() => {
       .attr("width", (d) => x(d));
   }
 
+  // 定时器函数，每隔 3 秒增加数据并更新图表
+  function tick() {
+    // 随机增加数据
+    for (let i = 0; i < data.length; i++) {
+      data[i] += Math.round(Math.random() * 10);
+    }
+    // 更新 X 轴比例尺
+    const x = d3
+      .scaleLinear()
+      .domain([0, d3.max(data)])
+      .range([0, width]);
+    // 更新 X 轴
+    xAxisG.call(d3.axisBottom(x));
+    // 调用更新函数
+    update();
+  }
+
   // 初始更新
   update();
 
-  // 每隔 3 秒更新一次
-  //   setInterval(update, 3000);
+  // 启动定时器
+  timer = setInterval(tick, 3000);
+});
+
+// 组件卸载时清除定时器
+onUnmounted(() => {
+  clearInterval(timer);
 });
 </script>
 
