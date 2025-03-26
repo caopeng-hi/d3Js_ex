@@ -70,6 +70,19 @@ onMounted(() => {
     .attr("fill", "steelblue")
     .attr("width", 0);
 
+  // 添加数据标签到柱状图右侧
+  const labels = svg
+    .selectAll(".label")
+    .data(data)
+    .enter()
+    .append("text")
+    .attr("class", "label")
+    .attr("y", (d, i) => y(label[i]) + y.bandwidth() / 2)
+    .attr("x", (d) => x(d) + 5) // 使标签在柱状图右侧并留出一定间距
+    .attr("dy", ".35em")
+    .attr("text-anchor", "start") // 文本从左侧开始对齐
+    .text((d) => d);
+
   function tick() {
     // 随机增加数据
     for (let i = 0; i < data.length; i++) {
@@ -115,6 +128,15 @@ onMounted(() => {
       .duration(1000)
       .attr("y", (d, i) => y(sortedLabels[i]))
       .attr("width", (d) => x(d));
+
+    // 更新数据标签
+    labels
+      .data(sortedData)
+      .transition()
+      .duration(1000)
+      .attr("y", (d, i) => y(sortedLabels[i]) + y.bandwidth() / 2)
+      .attr("x", (d) => x(d) + 5) // 使标签在更新后的柱状图右侧
+      .text((d) => d);
   }
 
   // 初始更新
