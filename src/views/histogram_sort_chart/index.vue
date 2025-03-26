@@ -101,6 +101,9 @@ onMounted(() => {
     update();
   }
 
+  // 新增标志位，用于控制文字动画是否执行
+  let isFirstUpdate = true;
+
   // 动态排序和更新柱状图
   function update() {
     // 对数据进行排序
@@ -121,6 +124,7 @@ onMounted(() => {
     xAxisG.call(d3.axisBottom(x).ticks(4));
     // 更新 X 轴样式
     updateXAxisStyle();
+
     // 更新柱状图
     bars
       .data(sortedData)
@@ -130,15 +134,24 @@ onMounted(() => {
       .attr("width", (d) => x(d));
 
     // 更新数据标签
-    labels
+    const labelUpdate = labels
       .data(sortedData)
-      .attr("y", (d, i) => y(sortedLabels[i]) + y.bandwidth() / 2)
-      // 设置初始 x 位置为柱状图起始位置
-      .attr("x", 0)
-      .text((d) => d)
-      .transition()
-      .duration(1000)
-      .attr("x", (d) => x(d) + 5);
+      .attr("y", (d, i) => y(sortedLabels[i]) + y.bandwidth() / 2);
+
+    if (isFirstUpdate) {
+      // 第一次更新时添加动画
+      labelUpdate
+        .attr("x", 0)
+        .text((d) => d)
+        .transition()
+        .duration(1000)
+        .attr("x", (d) => x(d) + 5);
+      // 更新标志位，后续不再执行动画
+      isFirstUpdate = false;
+    } else {
+      // 非第一次更新时直接更新位置和文本
+      labelUpdate.attr("x", (d) => x(d) + 5).text((d) => d);
+    }
   }
 
   // 初始更新
