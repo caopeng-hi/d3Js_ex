@@ -3,25 +3,40 @@
 </template>
 
 <script setup>
+// 引入 d3 库，用于数据可视化
 import * as d3 from "d3";
+// 引入 Vue 的生命周期钩子函数，onMounted 用于在组件挂载后执行代码，onUnmounted 用于在组件卸载前执行清理操作
 import { onMounted, onUnmounted } from "vue";
 
+// 定义 svg 变量，用于存储对 SVG 元素的引用
 let svg;
+// 定义柱状图的标签数组
 const label = ["A", "B", "C", "D", "E"];
+// 定义存储柱状图数据的数组
 const data = [];
+// 循环生成随机数据并添加到 data 数组中
 for (let i = 0; i < label.length; ++i) {
+  // 生成 0 到 200 之间的随机整数并添加到 data 数组
   data.push(Math.round(Math.random() * 200));
 }
 
+// 定义图表的边距，分别为上、右、下、左的边距
 const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+// 计算图表的实际宽度，减去左右边距
 const width = 600 - margin.left - margin.right;
+// 计算图表的实际高度，减去上下边距
 const height = 400 - margin.top - margin.bottom;
 
+// 定义定时器变量，用于定时更新数据
 let timer;
-let xAxisG; // 新增：用于存储 x 轴的 g 元素
-let yAxisG; // 新增：用于存储 y 轴的 g 元素
+// 定义变量用于存储 x 轴的 g 元素
+let xAxisG;
+// 定义变量用于存储 y 轴的 g 元素
+let yAxisG;
 
+// 组件挂载后执行的函数
 onMounted(() => {
+  // 选择 SVG 元素并设置其宽度和高度，同时添加一个 g 元素并进行平移
   svg = d3
     .select("svg")
     .attr("width", width + margin.left + margin.right)
@@ -29,30 +44,38 @@ onMounted(() => {
     .append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
-  // 创建比例尺，让 x 轴最大值大于 data 最大值
-  const paddingFactor = 1.2; // 调整此系数可改变 x 轴最大值超出 data 最大值的比例
+  // 调整此系数可改变 x 轴最大值超出 data 最大值的比例
+  const paddingFactor = 1.2;
+  // 创建 x 轴的线性比例尺，设置定义域和值域
   const x = d3
     .scaleLinear()
-    .domain([0, d3.max(data) * paddingFactor]) // 这里将最大值乘以一个系数
+    .domain([0, d3.max(data) * paddingFactor])
     .range([0, width]);
+  // 创建 y 轴的带状比例尺，设置定义域和值域，并设置间隔
   const y = d3.scaleBand().domain(label).range([0, height]).padding(0.1);
 
   // 添加 X 轴
   xAxisG = svg.append("g").attr("transform", `translate(0,${height})`).call(
     d3
       .axisBottom(x)
-      .tickSize(-height) // 设置刻度线长度为图标高度
-      .tickSizeOuter(0) // 取消首尾刻度线额外的部分
+      .tickSize(-height)
+      .tickSizeOuter(0)
       // 修改刻度数量为 4
       .ticks(4)
   );
 
-  // 修改 X 轴刻度线和文本的样式
+  /**
+   * 修改 X 轴刻度线和文本的样式
+   */
   function updateXAxisStyle() {
-    xAxisG.selectAll("line").attr("stroke", "#aaa"); // 设置刻度线颜色为 #aaa
-    xAxisG.selectAll("path").attr("stroke", "none"); // 取消 X 轴的横向线段
+    // 设置刻度线颜色为 #aaa
+    xAxisG.selectAll("line").attr("stroke", "#aaa");
+    // 取消 X 轴的横向线段
+    xAxisG.selectAll("path").attr("stroke", "none");
+    // 将 x 轴元素提升到最上层
     xAxisG.raise();
   }
+  // 调用函数更新 X 轴样式
   updateXAxisStyle();
 
   // 添加 Y 轴
@@ -79,11 +102,14 @@ onMounted(() => {
     .append("text")
     .attr("class", "label")
     .attr("y", (d, i) => y(label[i]) + y.bandwidth() / 2)
-    .attr("x", (d) => x(d) + 5) // 使标签在柱状图右侧并留出一定间距
+    .attr("x", (d) => x(d) + 5)
     .attr("dy", ".35em")
-    .attr("text-anchor", "start") // 文本从左侧开始对齐
+    .attr("text-anchor", "start")
     .text((d) => d);
 
+  /**
+   * 定时更新数据的函数
+   */
   function tick() {
     // 随机增加数据
     for (let i = 0; i < data.length; i++) {
@@ -105,7 +131,9 @@ onMounted(() => {
   // 新增标志位，用于控制文字动画是否执行
   let isFirstUpdate = true;
 
-  // 动态排序和更新柱状图
+  /**
+   * 动态排序和更新柱状图的函数
+   */
   function update() {
     // 对数据进行排序
     const sortedData = data.slice().sort((a, b) => b - a);
@@ -158,11 +186,11 @@ onMounted(() => {
   // 初始更新
   update();
 
-  // 启动定时器
+  // 启动定时器，每隔 1000 毫秒调用一次 tick 函数
   timer = setInterval(tick, 1000);
 });
 
-// 组件卸载时清除定时器
+// 组件卸载时清除定时器，避免内存泄漏
 onUnmounted(() => {
   clearInterval(timer);
 });
