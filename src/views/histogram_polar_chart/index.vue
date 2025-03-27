@@ -90,6 +90,9 @@ onMounted(() => {
 
   // 绘制环形柱状图
   svg
+    .append("g")
+    .attr("transform", `rotate(90)`)
+
     .selectAll("path")
     .data(data)
     .enter()
