@@ -44,10 +44,7 @@ onMounted(() => {
     .domain([0, data.length])
     .range([0, 2 * Math.PI]);
 
-  const radiusScale = d3
-    .scaleLinear()
-    .domain([0, d3.max(data, (d) => d.value)])
-    .range([0, radius]);
+  const radiusScale = d3.scaleLinear().domain([0, 3.9]).range([0, radius]);
 
   // 添加圆形刻度
   const ticks = radiusScale.ticks(5);
@@ -62,28 +59,28 @@ onMounted(() => {
     .attr("stroke-width", 1);
 
   // 添加刻度标签
-  svg
-    .selectAll(".tick-label")
-    .data(ticks)
-    .enter()
-    .append("text")
-    .attr("x", (d) => radiusScale(d) + 5)
-    .attr("y", 0)
-    .attr("dy", "0.35em")
-    .text((d) => d);
+  // svg
+  //   .selectAll(".tick-label")
+  //   .data(ticks)
+  //   .enter()
+  //   .append("text")
+  //   .attr("x", (d) => radiusScale(d) + 5)
+  //   .attr("y", 0)
+  //   .attr("dy", "0.35em")
+  //   .text((d) => d);
 
   // 添加径向刻度线
-  svg
-    .selectAll(".radial-line")
-    .data(data)
-    .enter()
-    .append("line")
-    .attr("x1", 0)
-    .attr("y1", 0)
-    .attr("x2", (d, i) => radius * Math.cos(angleScale(i) - Math.PI / 2))
-    .attr("y2", (d, i) => radius * Math.sin(angleScale(i) - Math.PI / 2))
-    .attr("stroke", "#ccc")
-    .attr("stroke-width", 1);
+  // svg
+  //   .selectAll(".radial-line")
+  //   .data(data)
+  //   .enter()
+  //   .append("line")
+  //   .attr("x1", 0)
+  //   .attr("y1", 0)
+  //   .attr("x2", (d, i) => radius * Math.cos(angleScale(i) - Math.PI / 2))
+  //   .attr("y2", (d, i) => radius * Math.sin(angleScale(i) - Math.PI / 2))
+  //   .attr("stroke", "#ccc")
+  //   .attr("stroke-width", 1);
 
   // 绘制环形柱状图
   svg
@@ -92,8 +89,12 @@ onMounted(() => {
     .enter()
     .append("path")
     .attr("d", (d, i) => {
-      const startAngle = angleScale(i);
-      const endAngle = angleScale(i + 1);
+      const value = d.value;
+      const startAngle = angleScale(0);
+      // 计算结束角度
+      const maxValue = 3.9;
+      const endAngle = (value / maxValue) * 2 * Math.PI;
+
       const innerRadius = radiusScale(d.value * 0.8); // 内半径
       const outerRadius = radiusScale(d.value); // 外半径
 
@@ -109,22 +110,6 @@ onMounted(() => {
     .attr("fill", "steelblue")
     .attr("stroke", "#fff")
     .attr("stroke-width", 1);
-
-  // 添加标签
-  svg
-    .selectAll("text")
-    .data(data)
-    .enter()
-    .append("text")
-    .attr("transform", (d, i) => {
-      const angle = (angleScale(i) + angleScale(i + 1)) / 2;
-      const r = radius * 0.6;
-      return `translate(${r * Math.cos(angle - Math.PI / 2)},${
-        r * Math.sin(angle - Math.PI / 2)
-      })`;
-    })
-    .attr("text-anchor", "middle")
-    .text((d) => d.label);
 });
 </script>
 
