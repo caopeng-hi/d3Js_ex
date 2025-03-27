@@ -59,20 +59,22 @@ onMounted(() => {
       .attr("y2", 0)
       .attr("stroke", "#000")
       .attr("stroke-width", 1)
-      .attr("transform", `rotate(${(tick / 3.9) * 360})`);
+      .attr("transform", `rotate(${(tick / ticks.length) * 360})`);
 
     // 添加刻度标签
     svg
       .append("text")
       .attr("x", radius - 10 + tickLength + 5)
-      .attr("y", 0)
+      .attr("y", -2)
       .attr("dy", "0.35em")
+      .attr("text-anchor", "start")
       .text(tick)
       .attr(
         "transform",
-        `rotate(${(tick / 3.9) * 360}) rotate(${-((tick / 3.9) * 360)}, ${
-          radius - 10 + tickLength + 5
-        }, 0)`
+        `rotate(${(tick / ticks.length) * 360}) rotate(${-(
+          (tick / ticks.length) *
+          360
+        )}, ${radius - 10 + tickLength + 10} , 0)`
       );
   });
 
