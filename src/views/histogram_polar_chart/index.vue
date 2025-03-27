@@ -127,11 +127,11 @@ onMounted(() => {
   svg
     .append("g")
     .attr("transform", `rotate(90)`)
-    .selectAll(".ring-label") // 添加class选择器
+    .selectAll(".ring-label")
     .data(data)
     .enter()
     .append("text")
-    .attr("class", "ring-label") // 添加class
+    .attr("class", "ring-label")
     .attr("transform", (d, i) => {
       const ringWidth = 20;
       const spacing = 10;
@@ -154,11 +154,16 @@ onMounted(() => {
 
       return `translate(${arcCenter[0]},${arcCenter[1]}) rotate(-90)`;
     })
+    .style("opacity", 0) // 初始透明度为0
+    .transition() // 添加过渡动画
+    .delay(1000) // 延迟1秒(与柱状图动画时间一致)
+    .duration(500) // 动画持续时间0.5秒
+    .style("opacity", 1) // 最终透明度为1
     .attr("text-anchor", "middle")
     .attr("dy", "0.35em")
-    .style("font-size", "12px") // 添加字体大小
-    .style("fill", "#000") // 确保文字颜色可见
-    .style("font-weight", "bold") // 加粗文字
+    .style("font-size", "12px")
+    .style("fill", "#000")
+    .style("font-weight", "bold")
     .text((d) => d.label);
 });
 </script>
