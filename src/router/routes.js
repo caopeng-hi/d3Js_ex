@@ -2,7 +2,7 @@
  * @Author: caopeng
  * @Date: 2025-03-20 17:04:56
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2025-03-26 09:02:22
+ * @LastEditTime: 2025-03-27 09:00:38
  * @Description: 请填写简介
  */
 
@@ -70,6 +70,14 @@ export default [
         component: () => import('@/views/histogram_sort_chart/index.vue'),
         meta: {
             title: '动态排序柱状图',
+        }
+    },
+    {
+        path: '/histogram_polar_chart',
+        name: 'histogram_polar_chart',
+        component: () => import('@/views/histogram_polar_chart/index.vue'),
+        meta: {
+            title: '极坐标柱状图',
         }
     },
     {
