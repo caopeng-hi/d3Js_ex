@@ -96,8 +96,10 @@ onMounted(() => {
       const endAngle = (value / maxValue) * 2 * Math.PI;
 
       const ringWidth = 20; // 固定圆环宽度
-      const innerRadius = radiusScale(d.value) - ringWidth; // 内半径
-      const outerRadius = radiusScale(d.value); // 外半径
+      const spacing = 10; // 固定圆环间距
+      const baseRadius = 50; // 基础半径
+      const innerRadius = baseRadius + i * (ringWidth + spacing); // 内半径
+      const outerRadius = innerRadius + ringWidth; // 外半径
 
       const arc = d3
         .arc()
