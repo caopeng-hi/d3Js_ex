@@ -38,50 +38,6 @@ onMounted(() => {
     .append("g")
     .attr("transform", `translate(${width / 2},${height / 2})`);
 
-  // 创建极坐标比例尺
-  const angleScale = d3
-    .scaleLinear()
-    .domain([0, data.length])
-    .range([0, 2 * Math.PI]);
-
-  const radiusScale = d3.scaleLinear().domain([0, 3.9]).range([0, radius]);
-
-  // 添加圆形刻度
-  const ticks = radiusScale.ticks(5);
-  svg
-    .selectAll(".circle")
-    .data(ticks)
-    .enter()
-    .append("circle")
-    .attr("r", (d) => radiusScale(d))
-    .attr("fill", "none")
-    .attr("stroke", "#ccc")
-    .attr("stroke-width", 1);
-
-  // 添加刻度标签
-  // svg
-  //   .selectAll(".tick-label")
-  //   .data(ticks)
-  //   .enter()
-  //   .append("text")
-  //   .attr("x", (d) => radiusScale(d) + 5)
-  //   .attr("y", 0)
-  //   .attr("dy", "0.35em")
-  //   .text((d) => d);
-
-  // 添加径向刻度线
-  // svg
-  //   .selectAll(".radial-line")
-  //   .data(data)
-  //   .enter()
-  //   .append("line")
-  //   .attr("x1", 0)
-  //   .attr("y1", 0)
-  //   .attr("x2", (d, i) => radius * Math.cos(angleScale(i) - Math.PI / 2))
-  //   .attr("y2", (d, i) => radius * Math.sin(angleScale(i) - Math.PI / 2))
-  //   .attr("stroke", "#ccc")
-  //   .attr("stroke-width", 1);
-
   // 绘制环形柱状图
   svg
     .selectAll("path")
@@ -90,14 +46,14 @@ onMounted(() => {
     .append("path")
     .attr("d", (d, i) => {
       const value = d.value;
-      const startAngle = angleScale(0);
+      const startAngle = 0;
       // 计算结束角度
       const maxValue = 3.9;
       const endAngle = (value / maxValue) * 2 * Math.PI;
 
       const ringWidth = 20; // 固定圆环宽度
       const spacing = 10; // 固定圆环间距
-      const baseRadius = 50; // 基础半径
+      const baseRadius = 10; // 基础半径
       const innerRadius = baseRadius + i * (ringWidth + spacing); // 内半径
       const outerRadius = innerRadius + ringWidth; // 外半径
 
@@ -113,6 +69,38 @@ onMounted(() => {
     .attr("fill", "steelblue")
     .attr("stroke", "#fff")
     .attr("stroke-width", 1);
+
+  // 添加文本标签 位于每个圆环的中间
+  svg
+    .selectAll("text")
+    .data(data)
+    .enter()
+    .append("text")
+    .attr("transform", (d, i) => {
+      const ringWidth = 20;
+      const spacing = 10;
+      const baseRadius = 10;
+      const innerRadius = baseRadius + i * (ringWidth + spacing);
+      const outerRadius = innerRadius + ringWidth;
+      const midRadius = (innerRadius + outerRadius) / 2;
+      const maxValue = 3.9;
+      const startAngle = 0;
+      const endAngle = (d.value / maxValue) * 2 * Math.PI;
+
+      // 计算柱状图的几何中心点
+      const arcCenter = d3
+        .arc()
+        .innerRadius(midRadius)
+        .outerRadius(midRadius)
+        .startAngle(startAngle)
+        .endAngle(endAngle)
+        .centroid();
+
+      return `translate(${arcCenter[0]},${arcCenter[1]})`;
+    })
+    .attr("text-anchor", "middle")
+    .attr("dy", "0.35em")
+    .text((d) => d.label);
 });
 </script>
 
