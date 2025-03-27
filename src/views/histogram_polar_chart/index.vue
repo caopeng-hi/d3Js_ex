@@ -41,10 +41,17 @@ onMounted(() => {
   // 添加最外围的y轴圆圈
   svg
     .append("circle")
-    .attr("r", radius - 10) // 留出10px边距
+    .attr("r", radius - 10)
     .attr("fill", "none")
     .attr("stroke", "#000")
     .attr("stroke-width", 1);
+
+  // 添加中心圆圈
+  svg
+    .append("circle")
+    .attr("r", 5)
+    .attr("fill", "#fff") // 修改为白色填充
+    .attr("stroke", "#000");
 
   // 添加y轴刻度线
   const ticks = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4]; // 刻度值以0.5为间隔
@@ -52,15 +59,19 @@ onMounted(() => {
   const angleStep = 360 / ticks.length; // 计算等分角度
 
   ticks.forEach((tick, i) => {
+    const isInsideCircle =
+      radius - 10 >
+      radius - 10 + (tick % 1 === 0 ? tickLength : tickLength / 2);
+
     svg
       .append("line")
-      .attr("x1", 0)
+      .attr("x1", 5) // 修改起点为内部圆圈半径10px处
       .attr("y1", 0)
       .attr("x2", radius - 10 + (tick % 1 === 0 ? tickLength : tickLength / 2))
       .attr("y2", 0)
-      .attr("stroke", "#aaa")
+      .attr("stroke", isInsideCircle ? "#aaa" : "#000")
       .attr("stroke-width", tick % 1 === 0 ? 1 : 0.5)
-      .attr("transform", `rotate(${i * angleStep})`); // 使用索引乘以等分角度
+      .attr("transform", `rotate(${i * angleStep})`);
 
     svg
       .append("text")
