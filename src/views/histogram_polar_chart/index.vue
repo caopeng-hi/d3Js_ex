@@ -59,17 +59,17 @@ onMounted(() => {
   const angleStep = 360 / ticks.length; // 计算等分角度
 
   ticks.forEach((tick, i) => {
-    const isInsideCircle =
-      radius - 10 >
+    const tickEnd =
       radius - 10 + (tick % 1 === 0 ? tickLength : tickLength / 2);
+    const isInsideCircle = tickEnd <= radius - 10; // 判断刻度终点是否在外圈内
 
     svg
       .append("line")
-      .attr("x1", 5) // 修改起点为内部圆圈半径10px处
+      .attr("x1", 5)
       .attr("y1", 0)
-      .attr("x2", radius - 10 + (tick % 1 === 0 ? tickLength : tickLength / 2))
+      .attr("x2", tickEnd)
       .attr("y2", 0)
-      .attr("stroke", isInsideCircle ? "#aaa" : "#000")
+      .attr("stroke", isInsideCircle ? "#aaa" : "#000") // 圆圈内#aaa，圆圈外#000
       .attr("stroke-width", tick % 1 === 0 ? 1 : 0.5)
       .attr("transform", `rotate(${i * angleStep})`);
 
@@ -122,10 +122,11 @@ onMounted(() => {
 
   // 添加文本标签 位于每个圆环的中间
   svg
-    .selectAll("text")
+    .selectAll(".ring-label") // 添加class选择器
     .data(data)
     .enter()
     .append("text")
+    .attr("class", "ring-label") // 添加class
     .attr("transform", (d, i) => {
       const ringWidth = 20;
       const spacing = 10;
@@ -150,6 +151,9 @@ onMounted(() => {
     })
     .attr("text-anchor", "middle")
     .attr("dy", "0.35em")
+    .style("font-size", "12px") // 添加字体大小
+    .style("fill", "#000") // 确保文字颜色可见
+    .style("font-weight", "bold") // 加粗文字
     .text((d) => d.label);
 });
 </script>
