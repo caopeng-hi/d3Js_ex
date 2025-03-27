@@ -92,39 +92,41 @@ onMounted(() => {
   svg
     .append("g")
     .attr("transform", `rotate(90)`)
-
     .selectAll("path")
     .data(data)
     .enter()
     .append("path")
-    .attr("d", (d, i) => {
-      const value = d.value;
-      const startAngle = 0;
-      // 计算结束角度
-      const maxValue = 3.9;
-      const endAngle = (value / maxValue) * 2 * Math.PI;
-
-      const ringWidth = 20; // 固定圆环宽度
-      const spacing = 10; // 固定圆环间距
-      const baseRadius = 10; // 基础半径
-      const innerRadius = baseRadius + i * (ringWidth + spacing); // 内半径
-      const outerRadius = innerRadius + ringWidth; // 外半径
-
-      const arc = d3
-        .arc()
-        .innerRadius(innerRadius)
-        .outerRadius(outerRadius)
-        .startAngle(startAngle)
-        .endAngle(endAngle);
-
-      return arc();
-    })
     .attr("fill", "steelblue")
     .attr("stroke", "#fff")
-    .attr("stroke-width", 1);
+    .attr("stroke-width", 1)
+    .transition() // 添加过渡动画
+    .duration(1000) // 动画持续时间1秒
+    .attrTween("d", function (d, i) {
+      const ringWidth = 20;
+      const spacing = 10;
+      const baseRadius = 10;
+      const innerRadius = baseRadius + i * (ringWidth + spacing);
+      const outerRadius = innerRadius + ringWidth;
+
+      const interpolate = d3.interpolate(0, d.value);
+
+      return function (t) {
+        const currentValue = interpolate(t);
+        const endAngle = (currentValue / 3.9) * 2 * Math.PI;
+
+        return d3
+          .arc()
+          .innerRadius(innerRadius)
+          .outerRadius(outerRadius)
+          .startAngle(0)
+          .endAngle(endAngle)();
+      };
+    });
 
   // 添加文本标签 位于每个圆环的中间
   svg
+    .append("g")
+    .attr("transform", `rotate(90)`)
     .selectAll(".ring-label") // 添加class选择器
     .data(data)
     .enter()
@@ -150,7 +152,7 @@ onMounted(() => {
         .endAngle(endAngle)
         .centroid();
 
-      return `translate(${arcCenter[0]},${arcCenter[1]})`;
+      return `translate(${arcCenter[0]},${arcCenter[1]}) rotate(-90)`;
     })
     .attr("text-anchor", "middle")
     .attr("dy", "0.35em")
