@@ -29,7 +29,7 @@ const chart = ref(null);
 onMounted(() => {
   const width = 500;
   const height = 500;
-  const radius = Math.min(width, height) / 2;
+  const radius = 150;
 
   const svg = d3
     .select(chart.value)
@@ -37,6 +37,44 @@ onMounted(() => {
     .attr("height", height)
     .append("g")
     .attr("transform", `translate(${width / 2},${height / 2})`);
+
+  // 添加最外围的y轴圆圈
+  svg
+    .append("circle")
+    .attr("r", radius - 10) // 留出10px边距
+    .attr("fill", "none")
+    .attr("stroke", "#000")
+    .attr("stroke-width", 1);
+
+  // 添加y轴刻度线
+  const ticks = [0, 1, 2, 3]; // 刻度值
+  const tickLength = 10; // 刻度线长度
+
+  ticks.forEach((tick) => {
+    svg
+      .append("line")
+      .attr("x1", radius - 10)
+      .attr("y1", 0)
+      .attr("x2", radius - 10 + tickLength)
+      .attr("y2", 0)
+      .attr("stroke", "#000")
+      .attr("stroke-width", 1)
+      .attr("transform", `rotate(${(tick / 3.9) * 360})`);
+
+    // 添加刻度标签
+    svg
+      .append("text")
+      .attr("x", radius - 10 + tickLength + 5)
+      .attr("y", 0)
+      .attr("dy", "0.35em")
+      .text(tick)
+      .attr(
+        "transform",
+        `rotate(${(tick / 3.9) * 360}) rotate(${-((tick / 3.9) * 360)}, ${
+          radius - 10 + tickLength + 5
+        }, 0)`
+      );
+  });
 
   // 绘制环形柱状图
   svg
