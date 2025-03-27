@@ -47,21 +47,21 @@ onMounted(() => {
     .attr("stroke-width", 1);
 
   // 添加y轴刻度线
-  const ticks = [0, 1, 2, 3]; // 刻度值
+  const ticks = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4]; // 刻度值以0.5为间隔
   const tickLength = 10; // 刻度线长度
+  const angleStep = 360 / ticks.length; // 计算等分角度
 
-  ticks.forEach((tick) => {
+  ticks.forEach((tick, i) => {
     svg
       .append("line")
-      .attr("x1", 0) // 从圆心开始
+      .attr("x1", 0)
       .attr("y1", 0)
-      .attr("x2", radius - 10 + tickLength) // 延伸到刻度线末端
+      .attr("x2", radius - 10 + (tick % 1 === 0 ? tickLength : tickLength / 2))
       .attr("y2", 0)
-      .attr("stroke", "#aaa") // 颜色改为#aaa
-      .attr("stroke-width", 1)
-      .attr("transform", `rotate(${(tick / ticks.length) * 360})`);
+      .attr("stroke", "#aaa")
+      .attr("stroke-width", tick % 1 === 0 ? 1 : 0.5)
+      .attr("transform", `rotate(${i * angleStep})`); // 使用索引乘以等分角度
 
-    // 添加刻度标签
     svg
       .append("text")
       .attr("x", radius - 10 + tickLength + 5)
@@ -71,10 +71,9 @@ onMounted(() => {
       .text(tick)
       .attr(
         "transform",
-        `rotate(${(tick / ticks.length) * 360}) rotate(${-(
-          (tick / ticks.length) *
-          360
-        )}, ${radius - 10 + tickLength + 10} , 0)`
+        `rotate(${i * angleStep}) rotate(${-(i * angleStep)}, ${
+          radius - 10 + tickLength + 10
+        } , 0)`
       );
   });
 
