@@ -53,11 +53,11 @@ onMounted(() => {
   ticks.forEach((tick) => {
     svg
       .append("line")
-      .attr("x1", radius - 10)
+      .attr("x1", 0) // 从圆心开始
       .attr("y1", 0)
-      .attr("x2", radius - 10 + tickLength)
+      .attr("x2", radius - 10 + tickLength) // 延伸到刻度线末端
       .attr("y2", 0)
-      .attr("stroke", "#000")
+      .attr("stroke", "#aaa") // 颜色改为#aaa
       .attr("stroke-width", 1)
       .attr("transform", `rotate(${(tick / ticks.length) * 360})`);
 
