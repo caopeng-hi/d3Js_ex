@@ -58,7 +58,7 @@ onMounted(() => {
   const yAxis = svg
     .append("g")
     .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y).ticks(6));
+    .call(d3.axisLeft(y).tickValues([0, 2, 4, 6, 8, 10]));
   const arr = yAxis.selectAll(".tick line");
   arr.each(function (d, i) {
     if (i !== 0) {
@@ -79,16 +79,28 @@ onMounted(() => {
   });
 
   // 添加x轴
-  svg
+  const xAxis = svg
     .append("g")
     .attr("transform", `translate(0,${height - margin.bottom})`)
-    .call(d3.axisBottom(x).tickValues([0, 3, 6, 9, 12, 15])); // 使用tickValues替代ticks().ticksValue()
-
-  // 添加y轴
-  svg
-    .append("g")
-    .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y).tickValues([0, 2, 4, 6, 8, 10]));
+    .call(d3.axisBottom(x).tickValues([0, 3, 6, 9, 12, 15]));
+  const arr1 = xAxis.selectAll(".tick line");
+  arr1.each(function (d, i) {
+    if (i !== 0) {
+      // 需要获取把d传进去，然后获取高度
+      const x1 = x(d);
+      const y1 = y(0);
+      const x2 = x1;
+      const y2 = y(10);
+      svg
+        .append("line")
+        .attr("x1", x1)
+        .attr("y1", y1)
+        .attr("x2", x2)
+        .attr("y2", y2)
+        .attr("stroke", "#aaa")
+        .attr("stroke-width", 0.5);
+    }
+  });
 
   // 添加散点
   svg
