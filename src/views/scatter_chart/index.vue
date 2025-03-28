@@ -45,25 +45,33 @@ onMounted(() => {
   // 创建比例尺
   const x = d3
     .scaleLinear()
-    .domain([0, d3.max(data, (d) => d[0])])
+    .domain([0, d3.max(data, (d) => d[0]) + 1])
     .range([margin.left, width - margin.right]);
 
+  // 创建比例尺
   const y = d3
     .scaleLinear()
-    .domain([0, d3.max(data, (d) => d[1])])
+    .domain([0, d3.max(data, (d) => d[1]) * 1.1]) // 增加10%的上边距
     .range([height - margin.bottom, margin.top]);
-
-  // 添加x轴
-  svg
-    .append("g")
-    .attr("transform", `translate(0,${height - margin.bottom})`)
-    .call(d3.axisBottom(x));
 
   // 添加y轴
   svg
     .append("g")
     .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y));
+    .call(d3.axisLeft(y).ticks(5))
+    .select(".domain"); // 选择轴线
+
+  // 添加x轴
+  svg
+    .append("g")
+    .attr("transform", `translate(0,${height - margin.bottom})`)
+    .call(d3.axisBottom(x).ticks(4));
+
+  // 添加y轴
+  svg
+    .append("g")
+    .attr("transform", `translate(${margin.left},0)`)
+    .call(d3.axisLeft(y).ticks(5));
 
   // 添加散点
   svg
