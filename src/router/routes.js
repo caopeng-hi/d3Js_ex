@@ -2,7 +2,7 @@
  * @Author: caopeng
  * @Date: 2025-03-20 17:04:56
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2025-03-27 09:00:38
+ * @LastEditTime: 2025-03-28 09:01:27
  * @Description: 请填写简介
  */
 
@@ -86,6 +86,14 @@ export default [
         component: () => import('@/views/radar_chart/index.vue'),
         meta: {
             title: '雷达图',
+        }
+    },
+    {
+        path: '/scatter_chart',
+        name: 'scatter_chart',
+        component: () => import('@/views/scatter_chart/index.vue'),
+        meta: {
+            title: '散点图',
         }
     }
 ]
