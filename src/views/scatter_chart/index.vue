@@ -45,33 +45,50 @@ onMounted(() => {
   // 创建比例尺
   const x = d3
     .scaleLinear()
-    .domain([0, d3.max(data, (d) => d[0]) + 1])
+    .domain([0, 15])
     .range([margin.left, width - margin.right]);
 
   // 创建比例尺
   const y = d3
     .scaleLinear()
-    .domain([0, d3.max(data, (d) => d[1]) * 1.1]) // 增加10%的上边距
+    .domain([0, 10]) // 增加10%的上边距
     .range([height - margin.bottom, margin.top]);
 
   // 添加y轴
-  svg
+  const yAxis = svg
     .append("g")
     .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y).ticks(5))
-    .select(".domain"); // 选择轴线
+    .call(d3.axisLeft(y).ticks(6));
+  const arr = yAxis.selectAll(".tick line");
+  arr.each(function (d, i) {
+    if (i !== 0) {
+      // 需要获取把d传进去，然后获取高度
+      const y1 = y(d);
+      const x1 = x(0);
+      const x2 = x(15);
+      const y2 = y1;
+      svg
+        .append("line")
+        .attr("x1", x1)
+        .attr("y1", y1)
+        .attr("x2", x2)
+        .attr("y2", y2)
+        .attr("stroke", "#aaa")
+        .attr("stroke-width", 0.5);
+    }
+  });
 
   // 添加x轴
   svg
     .append("g")
     .attr("transform", `translate(0,${height - margin.bottom})`)
-    .call(d3.axisBottom(x).ticks(4));
+    .call(d3.axisBottom(x).tickValues([0, 3, 6, 9, 12, 15])); // 使用tickValues替代ticks().ticksValue()
 
   // 添加y轴
   svg
     .append("g")
     .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y).ticks(5));
+    .call(d3.axisLeft(y).tickValues([0, 2, 4, 6, 8, 10]));
 
   // 添加散点
   svg
