@@ -112,7 +112,24 @@ onMounted(() => {
     .attr("cy", (d) => y(d[1]))
     .attr("r", pointSize)
     .attr("fill", "steelblue")
-    .attr("opacity", 0.7);
+    .attr("opacity", 0.7)
+    // 鼠标样式小手
+    .style("cursor", "pointer")
+    .on("mouseover", function (event, d) {
+      // 点扩大1.2倍动画700ms
+      d3.select(this)
+        .transition()
+        .duration(700)
+        .attr("fill", "red")
+        .attr("r", pointSize * 1.2);
+    })
+    .on("mouseout", function (event, d) {
+      d3.select(this)
+        .transition()
+        .duration(700)
+        .attr("r", pointSize)
+        .attr("fill", "steelblue");
+    });
 });
 </script>
 
