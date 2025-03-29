@@ -2,13 +2,17 @@
   <svg ref="chartRef"></svg>
 </template>
 <script setup>
+// 引入Vue组合式API和D3.js库
 import { onMounted, ref } from "vue";
 import * as d3 from "d3";
 
+// 定义SVG DOM引用
 const chartRef = ref(null);
+
+// 散点图数据 - 每个子数组代表一个点的[x,y]坐标
 const data = [
-  [10.0, 8.04],
-  [8.07, 6.95],
+  [10.0, 8.04], // 点1坐标
+  [8.07, 6.95], // 点2坐标
   [13.0, 7.58],
   [9.05, 8.81],
   [11.0, 8.33],
@@ -28,53 +32,63 @@ const data = [
   [12.0, 6.26],
   [12.0, 8.84],
   [7.08, 5.82],
-  [5.02, 5.68],
+  [5.02, 5.68], // 最后一个点
 ];
+
+// 散点半径大小
 const pointSize = 10;
 
+// 组件挂载后执行
 onMounted(() => {
-  const width = 500;
-  const height = 400;
-  const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+  // 1. 设置图表尺寸
+  const width = 500; // 图表宽度
+  const height = 400; // 图表高度
+  const margin = {
+    // 边距设置
+    top: 20, // 上边距
+    right: 20, // 右边距
+    bottom: 30, // 下边距
+    left: 40, // 左边距
+  };
 
+  // 2. 创建SVG容器
   const svg = d3
     .select(chartRef.value)
-    .attr("width", width)
-    .attr("height", height);
+    .attr("width", width) // 设置宽度
+    .attr("height", height); // 设置高度
 
-  // 创建比例尺
+  // 3. 创建x轴比例尺(线性比例尺)
   const x = d3
     .scaleLinear()
-    .domain([0, 15])
-    .range([margin.left, width - margin.right]);
+    .domain([0, 15]) // 数据范围(最小0,最大15)
+    .range([margin.left, width - margin.right]); // 映射到画布范围
 
-  // 创建比例尺
+  // 4. 创建y轴比例尺(线性比例尺)
   const y = d3
     .scaleLinear()
-    .domain([0, 10]) // 增加10%的上边距
-    .range([height - margin.bottom, margin.top]);
+    .domain([0, 10]) // 数据范围(最小0,最大10)
+    .range([height - margin.bottom, margin.top]); // 映射到画布范围
 
-  // 添加y轴
+  // 5. 添加y轴
   const yAxis = svg
     .append("g")
-    .attr("transform", `translate(${margin.left},0)`)
-    .call(d3.axisLeft(y).tickValues([0, 2, 4, 6, 8, 10]));
+    .attr("transform", `translate(${margin.left},0)`) // 移动到左侧
+    .call(d3.axisLeft(y).tickValues([0, 2, 4, 6, 8, 10])); // 指定刻度值
+
+  // 6. 添加y轴网格线
   const arr = yAxis.selectAll(".tick line");
   arr.each(function (d, i) {
     if (i !== 0) {
-      // 需要获取把d传进去，然后获取高度
-      const y1 = y(d);
-      const x1 = x(0);
-      const x2 = x(15);
-      const y2 = y1;
+      // 跳过第一个刻度线(避免与x轴重叠)
+      const y1 = y(d); // 获取y坐标
       svg
-        .append("line")
-        .attr("x1", x1)
-        .attr("y1", y1)
-        .attr("x2", x2)
-        .attr("y2", y2)
-        .attr("stroke", "#aaa")
-        .attr("stroke-width", 0.5);
+        .append("line") // 创建网格线
+        .attr("x1", x(0)) // 起点x坐标(最左侧)
+        .attr("y1", y1) // 起点y坐标
+        .attr("x2", x(15)) // 终点x坐标(最右侧)
+        .attr("y2", y1) // 终点y坐标
+        .attr("stroke", "#aaa") // 灰色线条
+        .attr("stroke-width", 0.5); // 细线
     }
   });
 
