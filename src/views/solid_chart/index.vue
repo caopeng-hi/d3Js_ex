@@ -53,13 +53,14 @@ onMounted(() => {
       const topY = margin.top + i * segmentHeight;
       const bottomY = topY + segmentHeight;
 
-      // 第一个图形保持为矩形
-      if (i === 0) {
+      // 最后一个图形改为三角形
+      if (i === data.length - 1) {
+        const triangleBottomY =
+          bottomY + (bottomWidth / 2) * Math.tan(Math.PI / 6);
         return `
           M${centerX - topWidth / 2},${topY}
           L${centerX + topWidth / 2},${topY}
-          L${centerX + topWidth / 2},${bottomY}
-          L${centerX - topWidth / 2},${bottomY}
+          L${centerX},${triangleBottomY}
           Z
         `;
       }
