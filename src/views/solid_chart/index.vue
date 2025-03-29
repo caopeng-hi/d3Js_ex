@@ -25,24 +25,14 @@ onMounted(() => {
     .attr("width", width)
     .attr("height", height);
 
-  // 计算比例尺
-  const x = d3
-    .scaleBand()
-    .domain(data.map((d) => d.name))
-    .range([margin.left, width - margin.right])
-    .padding(0.2);
-
-  const y = d3
-    .scaleLinear()
-    .domain([0, d3.max(data, (d) => d.value)])
-    .range([height - margin.bottom, margin.top]);
-
   // 创建漏斗图 - 整体为倒等边三角形
   const totalHeight = height - margin.top - margin.bottom;
   const triangleHeight = totalHeight * 0.95; // 增大高度比例
   const triangleBase = width * 0.9; // 增大底部宽度比例
 
-  svg
+  const rect = svg.append("g").attr("transform", `translate(${25},${50})`);
+
+  rect
     .selectAll(".funnel")
     .data(data)
     .enter()
@@ -70,6 +60,34 @@ onMounted(() => {
     .attr("stroke", "#fff")
     .attr("stroke-width", 1);
 
+  // 添加图例
+  const legend = svg
+    .append("g")
+    .attr("class", "legend")
+    .attr("transform", `translate(${width / 2},${margin.top - 15})`); // 上移15像素
+
+  legend
+    .selectAll("rect")
+    .data(data)
+    .enter()
+    .append("rect")
+    .attr("x", (d, i) => i * 80 - (data.length * 80) / 2)
+    .attr("y", 0)
+    .attr("width", 12)
+    .attr("height", 12)
+    .attr("fill", (d, i) => d3.schemeCategory10[i]);
+
+  legend
+    .selectAll("text")
+    .data(data)
+    .enter()
+    .append("text")
+    .attr("x", (d, i) => i * 80 - (data.length * 80) / 2 + 20)
+    .attr("y", 10)
+    .attr("text-anchor", "start")
+    .style("font-size", "12px")
+    .text((d) => d.name);
+
   // 添加标签
   svg
     .selectAll(".label")
@@ -86,7 +104,8 @@ onMounted(() => {
     .attr("dy", "0.35em") // 垂直居中
     .style("font-size", "12px")
     .style("fill", "#333")
-    .text((d) => `${d.name}`);
+    .text((d) => `${d.name}`)
+    .attr("transform", `translate(${25},${50})`);
 });
 </script>
 
