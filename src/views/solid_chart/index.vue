@@ -39,8 +39,8 @@ onMounted(() => {
 
   // 创建漏斗图 - 整体为倒等边三角形
   const totalHeight = height - margin.top - margin.bottom;
-  const triangleHeight = totalHeight * 0.9; // 保留一些边距
-  const triangleBase = width * 0.8; // 底部宽度
+  const triangleHeight = totalHeight * 0.95; // 增大高度比例
+  const triangleBase = width * 0.9; // 增大底部宽度比例
 
   svg
     .selectAll(".funnel")
@@ -78,9 +78,15 @@ onMounted(() => {
     .append("text")
     .attr("class", "label")
     .attr("x", width / 2)
-    .attr("y", (d, i) => margin.top + i * segmentHeight + segmentHeight / 2)
+    .attr(
+      "y",
+      (d, i) => margin.top + (i + 0.5) * (triangleHeight / data.length)
+    )
     .attr("text-anchor", "middle")
-    .text((d) => `${d.name}: ${d.value}%`);
+    .attr("dy", "0.35em") // 垂直居中
+    .style("font-size", "12px")
+    .style("fill", "#333")
+    .text((d) => `${d.name}`);
 });
 </script>
 
