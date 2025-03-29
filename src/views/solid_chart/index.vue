@@ -89,7 +89,7 @@ onMounted(() => {
     .text((d) => d.name);
 
   // 添加标签
-  svg
+  const labels = svg
     .selectAll(".label")
     .data(data)
     .enter()
@@ -101,11 +101,33 @@ onMounted(() => {
       (d, i) => margin.top + (i + 0.5) * (triangleHeight / data.length)
     )
     .attr("text-anchor", "middle")
-    .attr("dy", "0.35em") // 垂直居中
+    .attr("dy", "0.35em")
     .style("font-size", "12px")
     .style("fill", "#333")
+    .style("user-select", "none") // 添加不可选样式
+    .style("pointer-events", "none") // 添加不捕获鼠标事件
+    .style("cursor", "pointer") // 添加小手样式
     .text((d) => `${d.name}`)
     .attr("transform", `translate(${25},${50})`);
+
+  // 添加鼠标交互效果
+  rect
+    .selectAll(".funnel")
+    .style("cursor", "pointer") // 添加小手样式
+    .on("mouseover", function (event, d) {
+      labels
+        .filter((label) => label.name === d.name)
+        .transition()
+        .duration(200)
+        .style("font-size", "14.4px"); // 12px * 1.2
+    })
+    .on("mouseout", function (event, d) {
+      labels
+        .filter((label) => label.name === d.name)
+        .transition()
+        .duration(200)
+        .style("font-size", "12px");
+    });
 });
 </script>
 
