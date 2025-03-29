@@ -38,6 +38,8 @@ onMounted(() => {
     .range([height - margin.bottom, margin.top]);
 
   // 创建漏斗图
+  const segmentHeight = (height - margin.top - margin.bottom) / data.length;
+
   svg
     .selectAll(".funnel")
     .data(data)
@@ -45,19 +47,28 @@ onMounted(() => {
     .append("path")
     .attr("class", "funnel")
     .attr("d", (d, i) => {
-      const xPos = x(d.name);
-      const width = x.bandwidth();
-      const height = y(0) - y(d.value);
+      const centerX = width / 2;
+      const topWidth = width * (i === 0 ? 1 : data[i - 1].value / 100) * 0.8;
+      const bottomWidth = width * (d.value / 100) * 0.8;
+      const topY = margin.top + i * segmentHeight;
+      const bottomY = topY + segmentHeight;
 
-      // 计算漏斗形状路径
-      const topWidth = width * (i === 0 ? 1 : data[i - 1].value / 100);
-      const bottomWidth = width * (d.value / 100);
+      // 第一个图形保持为矩形
+      if (i === 0) {
+        return `
+          M${centerX - topWidth / 2},${topY}
+          L${centerX + topWidth / 2},${topY}
+          L${centerX + topWidth / 2},${bottomY}
+          L${centerX - topWidth / 2},${bottomY}
+          Z
+        `;
+      }
 
       return `
-        M${xPos + (width - topWidth) / 2},${y(d.value)}
-        L${xPos + (width + topWidth) / 2},${y(d.value)}
-        L${xPos + (width + bottomWidth) / 2},${y(0)}
-        L${xPos + (width - bottomWidth) / 2},${y(0)}
+        M${centerX - topWidth / 2},${topY}
+        L${centerX + topWidth / 2},${topY}
+        L${centerX + bottomWidth / 2},${bottomY}
+        L${centerX - bottomWidth / 2},${bottomY}
         Z
       `;
     })
@@ -72,8 +83,8 @@ onMounted(() => {
     .enter()
     .append("text")
     .attr("class", "label")
-    .attr("x", (d) => x(d.name) + x.bandwidth() / 2)
-    .attr("y", (d) => y(d.value) - 5)
+    .attr("x", width / 2)
+    .attr("y", (d, i) => margin.top + i * segmentHeight + segmentHeight / 2)
     .attr("text-anchor", "middle")
     .text((d) => `${d.name}: ${d.value}%`);
 });
