@@ -37,8 +37,10 @@ onMounted(() => {
     .domain([0, d3.max(data, (d) => d.value)])
     .range([height - margin.bottom, margin.top]);
 
-  // 创建漏斗图
-  const segmentHeight = (height - margin.top - margin.bottom) / data.length;
+  // 创建漏斗图 - 整体为倒等边三角形
+  const totalHeight = height - margin.top - margin.bottom;
+  const triangleHeight = totalHeight * 0.9; // 保留一些边距
+  const triangleBase = width * 0.8; // 底部宽度
 
   svg
     .selectAll(".funnel")
@@ -48,28 +50,19 @@ onMounted(() => {
     .attr("class", "funnel")
     .attr("d", (d, i) => {
       const centerX = width / 2;
-      const topWidth = width * (i === 0 ? 1 : data[i - 1].value / 100) * 0.8;
-      const bottomWidth = width * (d.value / 100) * 0.8;
-      const topY = margin.top + i * segmentHeight;
-      const bottomY = topY + segmentHeight;
+      const segmentTop = margin.top + (i / data.length) * triangleHeight;
+      const segmentBottom =
+        margin.top + ((i + 1) / data.length) * triangleHeight;
 
-      // 最后一个图形改为三角形
-      if (i === data.length - 1) {
-        const triangleBottomY =
-          bottomY + (bottomWidth / 2) * Math.tan(Math.PI / 6);
-        return `
-          M${centerX - topWidth / 2},${topY}
-          L${centerX + topWidth / 2},${topY}
-          L${centerX},${triangleBottomY}
-          Z
-        `;
-      }
+      // 计算每层的宽度
+      const topWidth = triangleBase * (1 - i / data.length);
+      const bottomWidth = triangleBase * (1 - (i + 1) / data.length);
 
       return `
-        M${centerX - topWidth / 2},${topY}
-        L${centerX + topWidth / 2},${topY}
-        L${centerX + bottomWidth / 2},${bottomY}
-        L${centerX - bottomWidth / 2},${bottomY}
+        M${centerX - topWidth / 2},${segmentTop}
+        L${centerX + topWidth / 2},${segmentTop}
+        L${centerX + bottomWidth / 2},${segmentBottom}
+        L${centerX - bottomWidth / 2},${segmentBottom}
         Z
       `;
     })
