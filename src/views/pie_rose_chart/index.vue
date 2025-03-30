@@ -47,7 +47,8 @@ onMounted(() => {
     .outerRadius((d) => radius(d.value))
     .startAngle((d) => d.startAngle)
     .endAngle((d) => d.endAngle)
-    .padAngle(0.01); // 设置扇形间隔
+    .padAngle(0.01)
+    .cornerRadius(15); // 添加5px的圆角效果
 
   // 创建饼图布局
   const pie = d3
@@ -77,7 +78,9 @@ onMounted(() => {
     .attr("fill", (d) => color(d.data.name))
     .attr("stroke", "#fff")
     .attr("stroke-width", 1)
-    .attr("opacity", 0.8);
+    .attr("opacity", 0.8)
+    .attr("rx", 5) // 添加圆角属性
+    .attr("ry", 5); // 添加圆角属性
 
   // 添加标签
   g.selectAll("text")
