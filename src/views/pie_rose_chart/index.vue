@@ -43,12 +43,12 @@ onMounted(() => {
   // 创建弧形生成器
   const arc = d3
     .arc()
-    .innerRadius(0)
+    .innerRadius(radius(10)) // 设置内半径为固定值，创建中间空白
     .outerRadius((d) => radius(d.value))
     .startAngle((d) => d.startAngle)
     .endAngle((d) => d.endAngle)
     .padAngle(0.01)
-    .cornerRadius(15); // 添加5px的圆角效果
+    .cornerRadius(15);
 
   // 创建饼图布局
   const pie = d3
@@ -99,6 +99,14 @@ onMounted(() => {
     .text((d) => d.data.name)
     .style("font-size", "12px")
     .style("fill", "#333");
+  // 添加中心空白圆
+  g.append("circle")
+    .attr("cx", 0)
+    .attr("cy", 0)
+    .attr("r", radius(10))
+    .attr("fill", "#fff")
+    .attr("stroke", "#ccc")
+    .attr("stroke-width", 1);
 });
 </script>
 
