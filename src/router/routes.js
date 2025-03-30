@@ -2,7 +2,7 @@
  * @Author: caopeng
  * @Date: 2025-03-20 17:04:56
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2025-03-29 09:55:37
+ * @LastEditTime: 2025-03-30 18:47:56
  * @Description: 请填写简介
  */
 
@@ -46,6 +46,14 @@ export default [
         component: () => import('@/views/pie_chart/index.vue'),
         meta: {
             title: '饼形图',
+        }
+    },
+    {
+        path: '/pie_rose_chart',
+        name: 'pie_rose_chart',
+        component: () => import('@/views/pie_rose_chart/index.vue'),
+        meta: {
+            title: '南丁格尔玫瑰图',
         }
     },
     {
