@@ -65,6 +65,34 @@ onMounted(() => {
     .domain(data.map((d) => d.name))
     .range(d3.schemeCategory10);
 
+  // 添加图例
+  const legend = svg
+    .append("g")
+    .attr("class", "legend")
+    .attr("transform", `translate(${width / 2},${margin.top})`);
+
+  legend
+    .selectAll("rect")
+    .data(data)
+    .enter()
+    .append("rect")
+    .attr("x", (d, i) => i * 80 - (data.length * 80) / 2)
+    .attr("y", 0)
+    .attr("width", 12)
+    .attr("height", 12)
+    .attr("fill", (d, i) => color(d.name));
+
+  legend
+    .selectAll("text")
+    .data(data)
+    .enter()
+    .append("text")
+    .attr("x", (d, i) => i * 80 - (data.length * 80) / 2 + 20)
+    .attr("y", 10)
+    .attr("text-anchor", "start")
+    .style("font-size", "12px")
+    .text((d) => d.name);
+
   // 绘制玫瑰图
   const g = svg
     .append("g")
