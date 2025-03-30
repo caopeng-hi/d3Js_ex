@@ -43,7 +43,7 @@ onMounted(() => {
   // 创建弧形生成器
   const arc = d3
     .arc()
-    .innerRadius(radius(10)) // 设置内半径为固定值，创建中间空白
+    .innerRadius(radius(5)) // 将内半径从10减小到5
     .outerRadius((d) => radius(d.value))
     .startAngle((d) => d.startAngle)
     .endAngle((d) => d.endAngle)
@@ -103,10 +103,8 @@ onMounted(() => {
   g.append("circle")
     .attr("cx", 0)
     .attr("cy", 0)
-    .attr("r", radius(10))
-    .attr("fill", "#fff")
-    .attr("stroke", "#ccc")
-    .attr("stroke-width", 1);
+    .attr("r", radius(5)) // 同步调整为5
+    .attr("fill", "#fff");
 });
 </script>
 
