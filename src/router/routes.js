@@ -2,7 +2,7 @@
  * @Author: caopeng
  * @Date: 2025-03-20 17:04:56
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2025-03-30 18:47:56
+ * @LastEditTime: 2025-03-31 09:07:57
  * @Description: 请填写简介
  */
 
@@ -103,14 +103,21 @@ export default [
         meta: {
             title: '散点图',
         }
-    }
-    ,
+    },
     {
         path: '/solid_chart',
         name: 'solid_chart',
         component: () => import('@/views/solid_chart/index.vue'),
         meta: {
             title: '漏斗图',
+        }
+    },
+    {
+        path: '/tree_chart',
+        name: 'tree_chart',
+        component: () => import('@/views/tree_chart/index.vue'),
+        meta: {
+            title: '树状图',
         }
     }
 ]
