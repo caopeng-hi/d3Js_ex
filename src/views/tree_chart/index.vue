@@ -2,7 +2,7 @@
  * @Author: caopeng
  * @Date: 2025-03-31 09:08:46
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2025-03-31 09:22:32
+ * @LastEditTime: 2025-03-31 09:25:08
  * @Description: 请填写简介
 -->
 <template>
@@ -341,6 +341,16 @@ onMounted(() => {
     .separation((a, b) => (a.parent === b.parent ? 1 : 2));
   // 层次化数据
   const root = d3.hierarchy(data);
+
+  // 默认折叠三级及以下节点
+  root.descendants().forEach((node) => {
+    if (node.depth >= 2) {
+      // 修改为2表示从第三级开始折叠
+      node._children = node.children;
+      node.children = null;
+    }
+  });
+
   const treeData = treeLayout(root);
 
   // 添加节点组
