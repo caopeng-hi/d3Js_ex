@@ -2,7 +2,7 @@
  * @Author: caopeng
  * @Date: 2025-03-31 09:08:46
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2025-03-31 09:10:28
+ * @LastEditTime: 2025-03-31 09:14:10
  * @Description: 请填写简介
 -->
 <template>
@@ -392,7 +392,81 @@ const data = {
 
 // 定义SVG DOM元素的引用
 const chartRef = ref(null);
-</script>
-<style scoped>
 /* 定义SVG元素的样式 */
+onMounted(() => {
+  // 设置图表尺寸和边距
+  const width = 1200;
+  const height = 800;
+  const margin = { top: 50, right: 90, bottom: 30, left: 90 };
+
+  // 创建SVG容器
+  const svg = d3
+    .select(chartRef.value)
+    .attr("width", width)
+    .attr("height", height)
+    .attr("viewBox", [0, 0, width, height]);
+
+  // 创建树布局
+  const treeLayout = d3
+    .tree()
+    .size([
+      height - margin.top - margin.bottom,
+      width - margin.left - margin.right,
+    ])
+    .separation((a, b) => (a.parent === b.parent ? 1 : 2));
+
+  // 层次化数据
+  const root = d3.hierarchy(data);
+  const treeData = treeLayout(root);
+
+  // 创建连接线生成器
+  const linkGenerator = d3
+    .linkHorizontal()
+    .x((d) => d.y)
+    .y((d) => d.x);
+
+  // 添加连接线
+  svg
+    .append("g")
+    .attr("fill", "none")
+    .attr("stroke", "#555")
+    .attr("stroke-opacity", 0.4)
+    .attr("stroke-width", 1.5)
+    .selectAll("path")
+    .data(treeData.links())
+    .join("path")
+    .attr("d", linkGenerator);
+
+  // 添加节点组
+  const node = svg
+    .append("g")
+    .selectAll("g")
+    .data(treeData.descendants())
+    .join("g")
+    .attr("transform", (d) => `translate(${d.y},${d.x})`);
+
+  // 添加节点圆圈
+  node
+    .append("circle")
+    .attr("r", 5)
+    .attr("fill", (d) => (d.children ? "#555" : "#999"));
+
+  // 添加节点文本
+  node
+    .append("text")
+    .attr("dy", "0.31em")
+    .attr("x", (d) => (d.children ? -8 : 8))
+    .attr("text-anchor", (d) => (d.children ? "end" : "start"))
+    .text((d) => d.data.name)
+    .clone(true)
+    .lower()
+    .attr("stroke", "white")
+    .attr("stroke-width", 3);
+});
+</script>
+
+<style scoped>
+svg {
+  background-color: #f8f8f8;
+}
 </style>
