@@ -2,7 +2,7 @@
  * @Author: caopeng
  * @Date: 2025-03-31 09:08:46
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2025-03-31 09:14:10
+ * @LastEditTime: 2025-03-31 09:22:32
  * @Description: 请填写简介
 -->
 <template>
@@ -237,12 +237,6 @@ const data = {
         { name: "Orientation", value: 1486 },
         {
           name: "palette",
-          children: [
-            { name: "ColorPalette", value: 6367 },
-            { name: "Palette", value: 1229 },
-            { name: "ShapePalette", value: 2059 },
-            { name: "SizePalette", value: 2291 },
-          ],
         },
         { name: "Property", value: 5559 },
         { name: "Shapes", value: 19118 },
@@ -266,19 +260,6 @@ const data = {
         },
         {
           name: "controls",
-          children: [
-            { name: "AnchorControl", value: 2138 },
-            { name: "ClickControl", value: 3824 },
-            { name: "Control", value: 1353 },
-            { name: "ControlList", value: 4665 },
-            { name: "DragControl", value: 2649 },
-            { name: "ExpandControl", value: 2832 },
-            { name: "HoverControl", value: 4896 },
-            { name: "IControl", value: 763 },
-            { name: "PanZoomControl", value: 5222 },
-            { name: "SelectionControl", value: 7862 },
-            { name: "TooltipControl", value: 8435 },
-          ],
         },
         {
           name: "data",
@@ -290,12 +271,6 @@ const data = {
             { name: "NodeSprite", value: 19382 },
             {
               name: "render",
-              children: [
-                { name: "ArrowType", value: 698 },
-                { name: "EdgeRenderer", value: 5569 },
-                { name: "IRenderer", value: 353 },
-                { name: "ShapeRenderer", value: 2247 },
-              ],
             },
             { name: "ScaleBinding", value: 11275 },
             { name: "Tree", value: 7147 },
@@ -304,78 +279,28 @@ const data = {
         },
         {
           name: "events",
-          children: [
-            { name: "DataEvent", value: 2313 },
-            { name: "SelectionEvent", value: 1880 },
-            { name: "TooltipEvent", value: 1701 },
-            { name: "VisualizationEvent", value: 1117 },
-          ],
         },
         {
           name: "legend",
-          children: [
-            { name: "Legend", value: 20859 },
-            { name: "LegendItem", value: 4614 },
-            { name: "LegendRange", value: 10530 },
-          ],
         },
         {
           name: "operator",
           children: [
             {
               name: "distortion",
-              children: [
-                { name: "BifocalDistortion", value: 4461 },
-                { name: "Distortion", value: 6314 },
-                { name: "FisheyeDistortion", value: 3444 },
-              ],
             },
             {
               name: "encoder",
-              children: [
-                { name: "ColorEncoder", value: 3179 },
-                { name: "Encoder", value: 4060 },
-                { name: "PropertyEncoder", value: 4138 },
-                { name: "ShapeEncoder", value: 1690 },
-                { name: "SizeEncoder", value: 1830 },
-              ],
             },
             {
               name: "filter",
-              children: [
-                { name: "FisheyeTreeFilter", value: 5219 },
-                { name: "GraphDistanceFilter", value: 3165 },
-                { name: "VisibilityFilter", value: 3509 },
-              ],
             },
             { name: "IOperator", value: 1286 },
             {
               name: "label",
-              children: [
-                { name: "Labeler", value: 9956 },
-                { name: "RadialLabeler", value: 3899 },
-                { name: "StackedAreaLabeler", value: 3202 },
-              ],
             },
             {
               name: "layout",
-              children: [
-                { name: "AxisLayout", value: 6725 },
-                { name: "BundledEdgeRouter", value: 3727 },
-                { name: "CircleLayout", value: 9317 },
-                { name: "CirclePackingLayout", value: 12003 },
-                { name: "DendrogramLayout", value: 4853 },
-                { name: "ForceDirectedLayout", value: 8411 },
-                { name: "IcicleTreeLayout", value: 4864 },
-                { name: "IndentedTreeLayout", value: 3174 },
-                { name: "Layout", value: 7881 },
-                { name: "NodeLinkTreeLayout", value: 12870 },
-                { name: "PieLayout", value: 2728 },
-                { name: "RadialTreeLayout", value: 12348 },
-                { name: "RandomLayout", value: 870 },
-                { name: "StackedAreaLayout", value: 9121 },
-                { name: "TreeMapLayout", value: 9191 },
-              ],
             },
             { name: "Operator", value: 2490 },
             { name: "OperatorList", value: 5248 },
@@ -414,10 +339,58 @@ onMounted(() => {
       width - margin.left - margin.right,
     ])
     .separation((a, b) => (a.parent === b.parent ? 1 : 2));
-
   // 层次化数据
   const root = d3.hierarchy(data);
   const treeData = treeLayout(root);
+
+  // 添加节点组
+  const node = svg
+    .append("g")
+    .selectAll("g")
+    .data(treeData.descendants())
+    .join("g")
+    .attr("transform", (d) => `translate(${d.y},${d.x})`);
+
+  // 默认折叠三级以下节点
+  root.descendants().forEach((node) => {
+    if (node.depth >= 3) {
+      node._children = node.children;
+      node.children = null;
+    }
+  });
+
+  // 添加节点圆圈时添加点击事件
+  node
+    .append("circle")
+    .attr("r", 5)
+    .attr("fill", (d) => (d.children ? "#555" : "#999"))
+    .on("click", (event, d) => {
+      if (d._children) {
+        d.children = d._children;
+        d._children = null;
+      } else if (d.children) {
+        d._children = d.children;
+        d.children = null;
+      }
+      update(d);
+    });
+
+  // 添加更新函数
+  function update(source) {
+    const treeData = treeLayout(root);
+
+    // 更新节点位置
+    svg
+      .selectAll("g.node")
+      .data(treeData.descendants(), (d) => d.id)
+      .attr("transform", (d) => `translate(${d.y},${d.x})`);
+
+    // 更新连接线
+    svg
+      .selectAll("path.link")
+      .data(treeData.links(), (d) => d.target.id)
+      .attr("d", linkGenerator);
+  }
 
   // 创建连接线生成器
   const linkGenerator = d3
@@ -436,20 +409,6 @@ onMounted(() => {
     .data(treeData.links())
     .join("path")
     .attr("d", linkGenerator);
-
-  // 添加节点组
-  const node = svg
-    .append("g")
-    .selectAll("g")
-    .data(treeData.descendants())
-    .join("g")
-    .attr("transform", (d) => `translate(${d.y},${d.x})`);
-
-  // 添加节点圆圈
-  node
-    .append("circle")
-    .attr("r", 5)
-    .attr("fill", (d) => (d.children ? "#555" : "#999"));
 
   // 添加节点文本
   node
