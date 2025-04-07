@@ -134,24 +134,29 @@ onMounted(() => {
 });
 
 // 添加value变化的监听
-watch(value, (newVal) => {
-  // 前景弧动画
+watch(value, (newVal, oldVal) => {
+  // 获取当前值，如果没有旧值则使用value.value
+  const currentValue = oldVal !== undefined ? oldVal : value.value;
+
+  // 前景弧动画 - 从当前值开始变化
   foregroundPath
     .transition()
     .duration(800)
     .attrTween("d", function () {
       return function (t) {
-        return foregroundArc.endAngle(scale(value.value * t))();
+        const interpolatedValue = currentValue + (newVal - currentValue) * t;
+        return foregroundArc.endAngle(scale(interpolatedValue))();
       };
     });
 
-  // 指针旋转动画
+  // 指针旋转动画 - 从当前值开始变化
   pointer
     .transition()
     .duration(800)
     .attrTween("transform", function () {
       return function (t) {
-        return `rotate(${(scale(value.value * t) * 180) / Math.PI})`;
+        const interpolatedValue = currentValue + (newVal - currentValue) * t;
+        return `rotate(${(scale(interpolatedValue) * 180) / Math.PI})`;
       };
     });
 
