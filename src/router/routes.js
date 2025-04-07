@@ -2,7 +2,7 @@
  * @Author: caopeng
  * @Date: 2025-03-20 17:04:56
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2025-03-31 09:07:57
+ * @LastEditTime: 2025-04-07 16:02:49
  * @Description: 请填写简介
  */
 
@@ -118,6 +118,14 @@ export default [
         component: () => import('@/views/tree_chart/index.vue'),
         meta: {
             title: '树状图',
+        }
+    },
+    {
+        path: '/gauge_chart',
+        name: 'gauge_chart',
+        component: () => import('@/views/gauge_chart/index.vue'),
+        meta: {
+            title: '仪表盘',
         }
     }
 ]
