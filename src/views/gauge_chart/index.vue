@@ -15,8 +15,8 @@ const value = ref(50);
 // 在setup中添加watch监听value变化
 import { watch } from "vue";
 
-// 将指针和前景弧的声明移到外部
-let pointer, foregroundPath;
+// 将指针、前景弧和刻度生成器的声明移到外部
+let pointer, foregroundPath, foregroundArc, scale;
 
 onMounted(() => {
   // 仪表盘参数设置
@@ -30,8 +30,8 @@ onMounted(() => {
     .append("g")
     .attr("transform", `translate(${width / 2},${height / 2})`);
 
-  // 创建刻度生成器
-  const scale = d3
+  // 创建刻度生成器 (移除const)
+  scale = d3
     .scaleLinear()
     .domain([0, 100])
     .range([-Math.PI * 0.8, Math.PI * 0.8]);
@@ -77,8 +77,8 @@ onMounted(() => {
 
   svg.append("path").attr("d", backgroundArc).attr("fill", "#eee");
 
-  // 绘制前景弧（值指示）
-  const foregroundArc = d3
+  // 绘制前景弧（值指示）(移除const)
+  foregroundArc = d3
     .arc()
     .innerRadius(radius * 0.85)
     .outerRadius(radius * 0.9)
