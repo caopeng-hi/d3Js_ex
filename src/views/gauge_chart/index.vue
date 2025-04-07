@@ -161,8 +161,19 @@ watch(value, (newVal, oldVal) => {
       };
     });
 
-  // 更新中心数值显示
-  d3.select(chartRef.value).select(".value-text").text(newVal);
+  // 更新中心数值显示 - 添加动画效果
+  d3.select(chartRef.value)
+    .select(".value-text")
+    .transition()
+    .duration(800)
+    .tween("text", function () {
+      const current = +this.textContent;
+      const target = newVal;
+      const interpolator = d3.interpolateNumber(current, target);
+      return function (t) {
+        this.textContent = Math.round(interpolator(t));
+      };
+    });
 });
 
 const randomizeValue = () => {
