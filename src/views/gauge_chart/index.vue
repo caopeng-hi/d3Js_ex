@@ -1,5 +1,8 @@
 <template>
-  <svg ref="chartRef"></svg>
+  <div class="gauge-container">
+    <svg ref="chartRef"></svg>
+    <button @click="randomizeValue" class="random-button">随机变化</button>
+  </div>
 </template>
 
 <script setup>
@@ -8,6 +11,12 @@ import * as d3 from "d3";
 
 const chartRef = ref(null);
 const value = ref(50);
+
+// 在setup中添加watch监听value变化
+import { watch } from "vue";
+
+// 将指针和前景弧的声明移到外部
+let pointer, foregroundPath;
 
 onMounted(() => {
   // 仪表盘参数设置
@@ -75,13 +84,14 @@ onMounted(() => {
     .outerRadius(radius * 0.9)
     .startAngle(scale(0));
 
-  svg
+  // 修改前景弧的创建方式
+  foregroundPath = svg
     .append("path")
     .attr("d", foregroundArc.endAngle(scale(value.value)))
     .attr("fill", "#4CAF50");
 
-  // 添加指针 - 替换为更美观的指针样式
-  const pointer = svg
+  // 修改指针的创建方式
+  pointer = svg
     .append("g")
     .attr("transform", `rotate(${(scale(value.value) * 180) / Math.PI})`);
 
@@ -122,9 +132,61 @@ onMounted(() => {
     .style("font-weight", "bold")
     .style("fill", "#4CAF50");
 });
+
+// 添加value变化的监听
+watch(value, (newVal) => {
+  // 前景弧动画
+  foregroundPath
+    .transition()
+    .duration(800)
+    .attrTween("d", function () {
+      return function (t) {
+        return foregroundArc.endAngle(scale(value.value * t))();
+      };
+    });
+
+  // 指针旋转动画
+  pointer
+    .transition()
+    .duration(800)
+    .attrTween("transform", function () {
+      return function (t) {
+        return `rotate(${(scale(value.value * t) * 180) / Math.PI})`;
+      };
+    });
+
+  // 更新中心数值显示
+  d3.select(chartRef.value).select("text").text(newVal);
+});
+
+const randomizeValue = () => {
+  value.value = Math.floor(Math.random() * 101); // 生成0-100的随机整数
+};
 </script>
 
 <style scoped>
+.gauge-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.random-button {
+  padding: 8px 16px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.random-button:hover {
+  background-color: #45a049;
+}
+
 svg {
   background-color: #f8f8f8;
   border-radius: 8px;
