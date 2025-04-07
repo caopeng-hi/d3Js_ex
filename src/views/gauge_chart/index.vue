@@ -125,6 +125,7 @@ onMounted(() => {
   // 添加当前值文本
   centerGroup
     .append("text")
+    .attr("class", "value-text")
     .attr("text-anchor", "middle")
     .attr("dy", "0.3em")
     .text(value.value)
@@ -161,7 +162,7 @@ watch(value, (newVal, oldVal) => {
     });
 
   // 更新中心数值显示
-  d3.select(chartRef.value).select("text").text(newVal);
+  d3.select(chartRef.value).select(".value-text").text(newVal);
 });
 
 const randomizeValue = () => {
