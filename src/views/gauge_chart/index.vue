@@ -80,28 +80,47 @@ onMounted(() => {
     .attr("d", foregroundArc.endAngle(scale(value.value)))
     .attr("fill", "#4CAF50");
 
-  // 添加指针
-  const pointerLine = d3.line()([
-    [0, 0],
-    [0, -radius * 0.5],
-  ]);
-
-  svg
-    .append("path")
-    .attr("d", pointerLine)
-    .attr("stroke", "#333")
-    .attr("stroke-width", 2)
+  // 添加指针 - 替换为更美观的指针样式
+  const pointer = svg
+    .append("g")
     .attr("transform", `rotate(${(scale(value.value) * 180) / Math.PI})`);
 
-  // 添加中心圆点和文本
-  svg.append("circle").attr("r", 5).attr("fill", "#333");
+  // 指针主体 - 加长并改用柔和蓝色
+  pointer
+    .append("path")
+    .attr("d", "M0,0 L-8,-15 L0,-70 L8,-15 Z") // 加长指针
+    .attr("fill", "#64B5F6") // 柔和蓝色
+    .attr("stroke", "#1976D2") // 深蓝色边框
+    .attr("stroke-width", 1);
 
-  svg
+  // 指针中心装饰 - 颜色与指针匹配
+  pointer
+    .append("circle")
+    .attr("r", 10) // 稍大一些
+    .attr("fill", "#64B5F6")
+    .attr("stroke", "#1976D2")
+    .attr("stroke-width", 1.5);
+
+  // 添加中心指示器 - 替换原有简单圆点
+  const centerGroup = svg.append("g");
+
+  // 添加背景圆环
+  centerGroup
+    .append("circle")
+    .attr("r", 20)
+    .attr("fill", "#f5f5f5")
+    .attr("stroke", "#333")
+    .attr("stroke-width", 1.5);
+
+  // 添加当前值文本
+  centerGroup
     .append("text")
     .attr("text-anchor", "middle")
     .attr("dy", "0.3em")
-    .text(`${value.value}`)
-    .style("font-size", "24px");
+    .text(value.value)
+    .style("font-size", "16px")
+    .style("font-weight", "bold")
+    .style("fill", "#4CAF50");
 });
 </script>
 
