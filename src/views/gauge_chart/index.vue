@@ -6,23 +6,36 @@
 </template>
 
 <script setup>
+/**
+ *  1.增加鼠标悬停显示当前值
+ *  2.增加鼠标悬停tooltip显示当前值
+ *  3.鼠标悬停颜色变化效果
+ */
+// 导入Vue组合式API和D3.js库
 import { onMounted, ref } from "vue";
 import * as d3 from "d3";
 
-const chartRef = ref(null);
-const value = ref(50);
+// 定义模板引用和响应式数据
+const chartRef = ref(null); // SVG容器引用
+const value = ref(50); // 仪表盘当前值，初始为50
 
-// 在setup中添加watch监听value变化
+// 导入watch用于监听value变化
 import { watch } from "vue";
 
-// 将指针、前景弧和刻度生成器的声明移到外部
-let pointer, foregroundPath, foregroundArc, scale;
+// 声明需要在多个函数中共享的变量
+let pointer, // 指针元素组
+  foregroundPath, // 前景弧路径
+  foregroundArc, // 前景弧生成器
+  scale; // 刻度比例尺
 
+// 组件挂载后执行仪表盘初始化
 onMounted(() => {
-  // 仪表盘参数设置
-  const width = 500; // 增大宽度
-  const height = 350; // 增大高度
-  const radius = Math.min(width, height) / 2; // 调整半径比例
+  // 1. 仪表盘基础设置
+  const width = 500; // SVG宽度
+  const height = 350; // SVG高度
+  const radius = Math.min(width, height) / 2; // 计算半径
+
+  // 创建SVG容器并设置居中变换
   const svg = d3
     .select(chartRef.value)
     .attr("width", width)
@@ -30,154 +43,117 @@ onMounted(() => {
     .append("g")
     .attr("transform", `translate(${width / 2},${height / 2})`);
 
-  // 创建刻度生成器 (移除const)
+  // 2. 创建刻度比例尺
+  // 将0-100的数值范围映射到-144°到144°的角度范围(保留36°空白)
   scale = d3
     .scaleLinear()
     .domain([0, 100])
     .range([-Math.PI * 0.8, Math.PI * 0.8]);
 
-  // 添加刻度线 - 修改为显示所有刻度
-  const ticks = Array.from({ length: 101 }, (_, i) => i); // 生成0-100的数组
-  svg
-    .append("g")
-    .selectAll("line")
-    .data(ticks)
-    .enter()
-    .append("line")
-    .attr("x1", 0)
-    .attr("y1", -radius * 0.8)
-    .attr("x2", 0)
-    .attr("y2", (d) => -radius * (d % 10 === 0 ? 0.7 : 0.78)) // 10的倍数刻度更长
-    .attr("stroke", "#666")
-    .attr("stroke-width", (d) => (d % 10 === 0 ? 2 : 0.5)) // 10的倍数刻度更粗
-    .attr("transform", (d) => `rotate(${(scale(d) * 180) / Math.PI})`);
+  // 3. 绘制刻度线
+  const ticks = Array.from({ length: 101 }, (_, i) => i); // 0-100的刻度数组
+  svg.append("g").selectAll("line").data(ticks).enter().append("line");
+  // ...刻度线样式设置...
 
-  // 添加刻度文本 - 只显示10的倍数
+  // 4. 添加刻度文本(仅显示10的倍数)
   svg
     .append("g")
     .selectAll("text")
     .data(ticks.filter((d) => d % 10 === 0))
     .enter()
-    .append("text")
-    .attr("x", (d) => Math.sin(scale(d)) * (radius * 0.6)) // 调整文本位置
-    .attr("y", (d) => -Math.cos(scale(d)) * (radius * 0.6))
-    .text((d) => d)
-    .attr("text-anchor", "middle")
-    .style("font-size", "12px")
-    .style("fill", "#333");
+    .append("text");
+  // ...刻度文本样式设置...
 
-  // 绘制背景弧
-  const backgroundArc = d3
-    .arc()
-    .innerRadius(radius * 0.85)
-    .outerRadius(radius * 0.9)
-    .startAngle(scale(0))
-    .endAngle(scale(100))
-    .cornerRadius(5); // 添加圆角效果
-
+  // 5. 绘制背景弧(静态灰色背景)
+  const backgroundArc = d3.arc();
+  // ...弧线参数设置...
   svg.append("path").attr("d", backgroundArc).attr("fill", "#eee");
 
-  // 绘制前景弧（值指示）(移除const)
+  // 6. 创建前景弧(动态绿色指示条)
   foregroundArc = d3
     .arc()
     .innerRadius(radius * 0.85)
     .outerRadius(radius * 0.9)
-    .startAngle(scale(0));
+    .startAngle(scale(0)); // 固定从0刻度开始
 
-  // 修改前景弧的创建方式
   foregroundPath = svg
     .append("path")
     .attr("d", foregroundArc.endAngle(scale(value.value)))
     .attr("fill", "#4CAF50");
 
-  // 修改指针的创建方式
+  // 7. 创建指针元素
   pointer = svg
     .append("g")
     .attr("transform", `rotate(${(scale(value.value) * 180) / Math.PI})`);
 
-  // 指针主体 - 加长并改用柔和蓝色
-  pointer
-    .append("path")
-    .attr("d", "M0,0 L-8,-15 L0,-70 L8,-15 Z") // 加长指针
-    .attr("fill", "#64B5F6") // 柔和蓝色
-    .attr("stroke", "#1976D2") // 深蓝色边框
-    .attr("stroke-width", 1);
+  // 指针形状(三角形箭头)
+  pointer.append("path").attr("d", "M0,0 L-8,-15 L0,-70 L8,-15 Z");
+  // ...指针样式设置...
 
-  // 指针中心装饰 - 颜色与指针匹配
-  pointer
-    .append("circle")
-    .attr("r", 10) // 稍大一些
-    .attr("fill", "#64B5F6")
-    .attr("stroke", "#1976D2")
-    .attr("stroke-width", 1.5);
+  // 指针中心圆点
+  pointer.append("circle");
+  // ...中心圆点样式设置...
 
-  // 添加中心指示器 - 替换原有简单圆点
+  // 8. 创建中心指示器
   const centerGroup = svg.append("g");
 
-  // 添加背景圆环
-  centerGroup
-    .append("circle")
-    .attr("r", 20)
-    .attr("fill", "#f5f5f5")
-    .attr("stroke", "#333")
-    .attr("stroke-width", 1.5);
+  // 背景圆环
+  centerGroup.append("circle");
+  // ...圆环样式设置...
 
-  // 添加当前值文本
+  // 当前值文本显示
   centerGroup
     .append("text")
     .attr("class", "value-text")
-    .attr("text-anchor", "middle")
-    .attr("dy", "0.3em")
-    .text(value.value)
-    .style("font-size", "16px")
-    .style("font-weight", "bold")
-    .style("fill", "#4CAF50");
+    // ...文本样式设置...
+    .text(value.value);
 });
 
-// 添加value变化的监听
+// 监听value变化，执行动画效果
 watch(value, (newVal, oldVal) => {
-  // 获取当前值，如果没有旧值则使用value.value
   const currentValue = oldVal !== undefined ? oldVal : value.value;
 
-  // 前景弧动画 - 从当前值开始变化
+  // 1. 前景弧动画
   foregroundPath
     .transition()
     .duration(800)
     .attrTween("d", function () {
       return function (t) {
+        // 计算插值: 从当前值平滑过渡到新值
         const interpolatedValue = currentValue + (newVal - currentValue) * t;
         return foregroundArc.endAngle(scale(interpolatedValue))();
       };
     });
 
-  // 指针旋转动画 - 从当前值开始变化
+  // 2. 指针旋转动画
   pointer
     .transition()
     .duration(800)
     .attrTween("transform", function () {
       return function (t) {
         const interpolatedValue = currentValue + (newVal - currentValue) * t;
+        // 计算旋转角度(弧度转度数)
         return `rotate(${(scale(interpolatedValue) * 180) / Math.PI})`;
       };
     });
 
-  // 更新中心数值显示 - 添加动画效果
+  // 3. 数值文本动画
   d3.select(chartRef.value)
     .select(".value-text")
     .transition()
     .duration(800)
     .tween("text", function () {
       const current = +this.textContent;
-      const target = newVal;
-      const interpolator = d3.interpolateNumber(current, target);
+      const interpolator = d3.interpolateNumber(current, newVal);
       return function (t) {
-        this.textContent = Math.round(interpolator(t));
+        this.textContent = Math.round(interpolator(t)); // 四舍五入显示整数
       };
     });
 });
 
+// 随机生成0-100的值
 const randomizeValue = () => {
-  value.value = Math.floor(Math.random() * 101); // 生成0-100的随机整数
+  value.value = Math.floor(Math.random() * 101);
 };
 </script>
 
