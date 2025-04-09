@@ -49,9 +49,9 @@ onMounted(() => {
   // 5. 添加波浪效果
   const waveGroup = svg.append("g").attr("clip-path", "url(#liquid-clip)");
 
-  const waveHeight = radius * 0.05;
-  const waveLength = radius * 0.3; // 减小波长以增加波浪数量
-  const waveCount = 3; // 增加波浪层数
+  const waveHeight = radius * 0.1; // 增加波浪高度为原来的2倍
+  const waveLength = radius * 0.25; // 略微减小波长使波浪更密集
+  const waveCount = 3;
 
   // 创建多层波浪
   for (let i = 0; i < waveCount; i++) {
