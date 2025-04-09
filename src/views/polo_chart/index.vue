@@ -1,5 +1,8 @@
 <template>
-  <svg ref="chartRef"></svg>
+  <div class="chart-container">
+    <svg ref="chartRef"></svg>
+    <button @click="changeValue" class="value-button">改变数值</button>
+  </div>
 </template>
 
 <script setup>
@@ -88,24 +91,52 @@ onMounted(() => {
     .style("font-weight", "bold")
     .style("fill", "#006064");
 
-  // 波浪动画
-  function animateWave() {
-    wave.attr("d", function () {
-      const points = [];
-      for (let x = -radius; x <= radius; x += 5) {
-        const y = Math.sin(x / waveLength + Date.now() / 1000) * waveHeight;
-        points.push([x, y + radius * 0.9 * (1 - value.value / 50)]);
-      }
-      points.push([radius, radius * 2], [-radius, radius * 2]);
-      return d3.line()(points);
-    });
-    requestAnimationFrame(animateWave);
-  }
-  animateWave();
+  // 删除多余的波浪动画函数
+  // function animateWave() {
+  //   wave.attr("d", function () {
+  //     const points = [];
+  //     for (let x = -radius; x <= radius; x += 5) {
+  //       const y = Math.sin(x / waveLength + Date.now() / 1000) * waveHeight;
+  //       points.push([x, y + radius * 0.9 * (1 - value.value / 50)]);
+  //     }
+  //     points.push([radius, radius * 2], [-radius, radius * 2]);
+  //     return d3.line()(points);
+  //   });
+  //   requestAnimationFrame(animateWave);
+  // }
+  // animateWave();
 });
+
+const changeValue = () => {
+  // 生成0-100之间的随机整数
+  value.value = Math.floor(Math.random() * 101);
+};
 </script>
 
 <style scoped>
+.chart-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.value-button {
+  padding: 10px 20px;
+  background-color: #00838f;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.value-button:hover {
+  background-color: #006064;
+}
+
+/* 保持原有样式 */
 svg {
   background-color: #f5f5f5;
   border-radius: 50%;
