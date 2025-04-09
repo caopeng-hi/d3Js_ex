@@ -12,12 +12,16 @@ import * as d3 from "d3";
 const chartRef = ref(null);
 const value = ref(50); // 水球液位值，范围0-100
 
+// 将radius移到外部作用域
+let radius, waveHeight, waveLength;
+
 onMounted(() => {
   // 1. 基础设置
   const width = 300;
   const height = 300;
-  const radius = Math.min(width, height) / 2;
-
+  radius = Math.min(width, height) / 2; // 移除const
+  waveHeight = radius * 0.1; // 增加波浪高度为原来的2倍
+  waveLength = radius * 0.25; // 略微减小波长使波浪更密集
   // 创建SVG容器
   const svg = d3
     .select(chartRef.value)
@@ -52,8 +56,6 @@ onMounted(() => {
   // 5. 添加波浪效果
   const waveGroup = svg.append("g").attr("clip-path", "url(#liquid-clip)");
 
-  const waveHeight = radius * 0.1; // 增加波浪高度为原来的2倍
-  const waveLength = radius * 0.25; // 略微减小波长使波浪更密集
   const waveCount = 3;
 
   // 创建多层波浪
@@ -90,26 +92,26 @@ onMounted(() => {
     .style("font-size", "24px")
     .style("font-weight", "bold")
     .style("fill", "#006064");
-
-  // 删除多余的波浪动画函数
-  // function animateWave() {
-  //   wave.attr("d", function () {
-  //     const points = [];
-  //     for (let x = -radius; x <= radius; x += 5) {
-  //       const y = Math.sin(x / waveLength + Date.now() / 1000) * waveHeight;
-  //       points.push([x, y + radius * 0.9 * (1 - value.value / 50)]);
-  //     }
-  //     points.push([radius, radius * 2], [-radius, radius * 2]);
-  //     return d3.line()(points);
-  //   });
-  //   requestAnimationFrame(animateWave);
-  // }
-  // animateWave();
 });
 
 const changeValue = () => {
   // 生成0-100之间的随机整数
-  value.value = Math.floor(Math.random() * 101);
+  const newValue = Math.floor(Math.random() * 101);
+
+  // 更新中心文本
+  d3.select(chartRef.value)
+    .select("text")
+    .transition()
+    .duration(1000)
+    .tween("text", function () {
+      const current = +this.textContent.replace("%", "");
+      const interpolator = d3.interpolateNumber(current, newValue);
+      return function (t) {
+        this.textContent = `${Math.round(interpolator(t))}%`;
+      };
+    });
+
+  value.value = newValue;
 };
 </script>
 
