@@ -68,22 +68,26 @@ onMounted(() => {
     const wave = waveGroup
       .append("path")
       .attr("fill", "#00838f") // 波浪颜色
-      .attr("opacity", 0.2 + i * 0.1); // 透明度递增
-
+      .attr("opacity", 0.2 + i * 0.1);
     // 波浪动画函数
     function animateWave(waveElement, offset) {
-      waveElement.attr("d", function () {
-        const points = [];
-        // 生成波浪路径点
-        for (let x = -radius; x <= radius; x += 5) {
-          const y =
-            Math.sin(x / waveLength + Date.now() / 1000 + offset) * waveHeight;
-          points.push([x, y + radius * 0.9 * (1 - value.value / 50)]);
-        }
-        // 闭合路径
-        points.push([radius, radius * 2], [-radius, radius * 2]);
-        return d3.line()(points); // 生成SVG路径
-      });
+      waveElement
+        .transition() // 启用过渡
+        .duration(500) // 动画持续时间（毫秒）
+        .ease(d3.easeLinear) // 线性动画（适合连续波动）
+        .attr("d", function () {
+          const points = [];
+          // 生成波浪路径点
+          for (let x = -radius; x <= radius; x += 5) {
+            const y =
+              Math.sin(x / waveLength + Date.now() / 1000 + offset) *
+              waveHeight;
+            points.push([x, y + radius * 0.9 * (1 - value.value / 50)]);
+          }
+          // 闭合路径
+          points.push([radius, radius * 2], [-radius, radius * 2]);
+          return d3.line()(points); // 生成SVG路径
+        });
       requestAnimationFrame(() => animateWave(waveElement, offset)); // 持续动画
     }
     animateWave(wave, i * 0.5); // 启动动画，每层有不同相位偏移
