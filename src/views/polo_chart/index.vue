@@ -27,9 +27,9 @@ onMounted(() => {
   svg
     .append("circle")
     .attr("r", radius)
-    .attr("fill", "#e0f7fa")
+    .attr("fill", "#ffffff")
     .attr("stroke", "#00838f")
-    .attr("stroke-width", 2);
+    .attr("stroke-width", 8);
 
   // 3. 创建液位剪切路径
   const clipPath = svg
@@ -42,7 +42,7 @@ onMounted(() => {
   const liquid = svg
     .append("circle")
     .attr("r", radius * 0.9)
-    .attr("fill", "#00acc1")
+    .attr("fill", "#ffffff")
     .attr("clip-path", "url(#liquid-clip)")
     .attr("transform", `translate(0,${radius * 0.9 * (1 - value.value / 50)})`);
 
