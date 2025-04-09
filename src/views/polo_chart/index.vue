@@ -50,12 +50,33 @@ onMounted(() => {
   const waveGroup = svg.append("g").attr("clip-path", "url(#liquid-clip)");
 
   const waveHeight = radius * 0.05;
-  const waveLength = radius * 0.5;
+  const waveLength = radius * 0.3; // 减小波长以增加波浪数量
+  const waveCount = 3; // 增加波浪层数
 
-  const wave = waveGroup
-    .append("path")
-    .attr("fill", "#00838f")
-    .attr("opacity", 0.3);
+  // 创建多层波浪
+  for (let i = 0; i < waveCount; i++) {
+    const wave = waveGroup
+      .append("path")
+      .attr("fill", "#00838f")
+      .attr("opacity", 0.2 + i * 0.1); // 每层波浪透明度递增
+
+    // 波浪动画
+    function animateWave(waveElement, offset) {
+      waveElement.attr("d", function () {
+        const points = [];
+        for (let x = -radius; x <= radius; x += 5) {
+          // 添加相位偏移使波浪错开
+          const y =
+            Math.sin(x / waveLength + Date.now() / 1000 + offset) * waveHeight;
+          points.push([x, y + radius * 0.9 * (1 - value.value / 50)]);
+        }
+        points.push([radius, radius * 2], [-radius, radius * 2]);
+        return d3.line()(points);
+      });
+      requestAnimationFrame(() => animateWave(waveElement, offset));
+    }
+    animateWave(wave, i * 0.5); // 每层波浪有不同相位偏移
+  }
 
   // 6. 添加中心文本
   svg
