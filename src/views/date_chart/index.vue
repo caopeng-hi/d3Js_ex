@@ -25,7 +25,7 @@ onMounted(() => {
 
   // 3. 生成模拟数据（一年365天的随机贡献数据）
   const data = [];
-  const now = new Date();
+  const now = new Date(2025, 11, 31); // 设置为2025年12月31日
   const yearAgo = new Date(now);
   yearAgo.setFullYear(yearAgo.getFullYear() - 1);
 
@@ -51,7 +51,7 @@ onMounted(() => {
   svg
     .append("g")
     .selectAll("text.year")
-    .data([yearAgo.getFullYear()])
+    .data([yearAgo.getFullYear() + 1])
     .enter()
     .append("text")
     .attr("class", "year")
