@@ -2,7 +2,7 @@
  * @Author: caopeng
  * @Date: 2025-03-20 17:04:56
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2025-04-09 08:48:40
+ * @LastEditTime: 2025-04-16 16:44:26
  * @Description: 请填写简介
  */
 
@@ -134,6 +134,14 @@ export default [
         component: () => import('@/views/polo_chart/index.vue'),
         meta: {
             title: '水球图',
+        }
+    },
+    {
+        path: '/date_chart',
+        name: 'date_chart',
+        component: () => import('@/views/date_chart/index.vue'),
+        meta: {
+            title: '日期图',
         }
     }
 ]
