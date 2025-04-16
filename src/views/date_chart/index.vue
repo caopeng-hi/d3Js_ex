@@ -12,7 +12,7 @@ const svgRef = ref(null);
 
 onMounted(() => {
   // 1. 设置图表尺寸和边距
-  const width = 800;
+  const width = 1000;
   const height = 180; // 增加高度以容纳年份标签
   const margin = { top: 30, right: 20, bottom: 30, left: 50 }; // 调整边距
 
@@ -55,7 +55,7 @@ onMounted(() => {
     .enter()
     .append("text")
     .attr("class", "year")
-    .attr("x", -30)
+    .attr("x", 30)
     .attr("y", height / 2)
     .text((d) => d)
     .style("font-size", "12px")
