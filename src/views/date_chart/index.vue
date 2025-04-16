@@ -94,10 +94,19 @@ onMounted(() => {
       return margin.left + week * (cellSize + cellMargin);
     })
     .attr("y", (d, i) => {
-      const day = i % 7;
+      const day = getDayOfWeek(d.date);
       return margin.top + day * (cellSize + cellMargin);
     })
-    .attr("fill", (d) => colorScale(d.count))
+    .attr("fill", (d) => {
+      const year = d.date.getFullYear();
+      console.log(d.date, "day");
+
+      if (year === 2025) {
+        return colorScale(d.count);
+      } else {
+        return "#fff";
+      }
+    })
     .attr("rx", 2)
     .attr("ry", 2);
 
@@ -119,6 +128,17 @@ onMounted(() => {
     .style("font-size", "10px")
     .style("fill", "#767676");
 });
+function getDayOfWeek(dateString) {
+  const date = new Date(dateString);
+
+  // 检查日期是否有效
+  if (isNaN(date.getTime())) {
+    throw new Error("无效的日期格式");
+  }
+
+  const dayIndex = date.getDay(); // 返回0(周日)到6(周六)
+  return dayIndex;
+}
 </script>
 
 <style scoped>
