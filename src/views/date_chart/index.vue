@@ -13,8 +13,8 @@ const svgRef = ref(null);
 onMounted(() => {
   // 1. 设置图表尺寸和边距
   const width = 800;
-  const height = 150;
-  const margin = { top: 20, right: 20, bottom: 30, left: 40 };
+  const height = 180; // 增加高度以容纳年份标签
+  const margin = { top: 30, right: 20, bottom: 30, left: 50 }; // 调整边距
 
   // 2. 创建SVG容器
   const svg = d3
@@ -47,7 +47,22 @@ onMounted(() => {
   const cellMargin = 2;
   const weekWidth = cellSize * 7 + cellMargin * 6;
 
-  // 6. 绘制日历方块
+  // 6. 添加年份标签（左侧）
+  svg
+    .append("g")
+    .selectAll("text.year")
+    .data([yearAgo.getFullYear()])
+    .enter()
+    .append("text")
+    .attr("class", "year")
+    .attr("x", -30)
+    .attr("y", height / 2)
+    .text((d) => d)
+    .style("font-size", "12px")
+    .style("fill", "#767676")
+    .style("text-anchor", "middle");
+
+  // 7. 绘制日历方块（调整y位置）
   svg
     .selectAll("rect")
     .data(data)
@@ -57,17 +72,17 @@ onMounted(() => {
     .attr("height", cellSize)
     .attr("x", (d, i) => {
       const week = Math.floor(i / 7);
-      return week * (cellSize + cellMargin);
+      return margin.left + week * (cellSize + cellMargin);
     })
     .attr("y", (d, i) => {
       const day = i % 7;
-      return day * (cellSize + cellMargin);
+      return margin.top + day * (cellSize + cellMargin);
     })
     .attr("fill", (d) => colorScale(d.count))
     .attr("rx", 2)
     .attr("ry", 2);
 
-  // 7. 添加月份标签
+  // 8. 添加月份标签（顶部）
   const months = d3.timeMonths(yearAgo, now);
   svg
     .selectAll("text.month")
@@ -78,9 +93,9 @@ onMounted(() => {
     .attr("x", (d) => {
       const firstDay = d3.timeWeek.floor(d);
       const diff = d3.timeDay.count(d3.timeYear.floor(d), firstDay);
-      return (diff / 7) * (cellSize + cellMargin);
+      return margin.left + (diff / 7) * (cellSize + cellMargin);
     })
-    .attr("y", -5)
+    .attr("y", 15)
     .text((d) => d.toLocaleString("default", { month: "short" }))
     .style("font-size", "10px")
     .style("fill", "#767676");
