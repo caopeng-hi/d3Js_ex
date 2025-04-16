@@ -62,6 +62,25 @@ onMounted(() => {
     .style("fill", "#767676")
     .style("text-anchor", "middle");
 
+  // 新增：添加星期标签（右侧）
+  const weekDays = ["日", "一", "二", "三", "四", "五", "六"];
+  svg
+    .append("g")
+    .selectAll("text.weekday")
+    .data(weekDays)
+    .enter()
+    .append("text")
+    .attr("class", "weekday")
+    .attr("x", width - 20) // 右侧位置
+    .attr(
+      "y",
+      (d, i) => margin.top + i * (cellSize + cellMargin) + cellSize / 2
+    )
+    .text((d) => d)
+    .style("font-size", "10px")
+    .style("fill", "#767676")
+    .style("text-anchor", "middle");
+
   // 7. 绘制日历方块（调整y位置）
   svg
     .selectAll("rect")
