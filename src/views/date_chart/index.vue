@@ -82,6 +82,18 @@ onMounted(() => {
     .style("text-anchor", "middle");
 
   // 7. 绘制日历方块（调整y位置）
+  const tooltip = d3
+    .select("body")
+    .append("div")
+    .attr("class", "tooltip")
+    .style("position", "absolute")
+    .style("visibility", "hidden")
+    .style("background", "#333")
+    .style("color", "#fff")
+    .style("padding", "5px 10px")
+    .style("border-radius", "4px")
+    .style("font-size", "12px");
+
   svg
     .selectAll("rect")
     .data(data)
@@ -97,11 +109,29 @@ onMounted(() => {
       const day = getDayOfWeek(d.date);
       return margin.top + day * (cellSize + cellMargin);
     })
-    .attr("fill", (d) => {
-      return colorScale(d.count);
-    })
+    .attr("fill", (d) => colorScale(d.count))
     .attr("rx", 2)
-    .attr("ry", 2);
+    .attr("ry", 2)
+    .on("mouseover", function (event, d) {
+      d3.select(this).attr("fill", "red");
+
+      const weekDays = ["日", "一", "二", "三", "四", "五", "六"];
+      const dayName = weekDays[d.date.getDay()];
+
+      tooltip
+        .html(
+          `${d.date.getFullYear()}年${
+            d.date.getMonth() + 1
+          }月${d.date.getDate()}日 星期${dayName}`
+        )
+        .style("left", event.pageX + 10 + "px")
+        .style("top", event.pageY - 30 + "px")
+        .style("visibility", "visible");
+    })
+    .on("mouseout", function () {
+      d3.select(this).attr("fill", (d) => colorScale(d.count));
+      tooltip.style("visibility", "hidden");
+    });
 
   // 8. 添加月份标签（顶部）
   const months = d3.timeMonths(yearAgo, now);
