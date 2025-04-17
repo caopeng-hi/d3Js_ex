@@ -90,7 +90,7 @@ onMounted(() => {
     .attr("width", cellSize)
     .attr("height", cellSize)
     .attr("x", (d, i) => {
-      const week = Math.floor(i / 7);
+      const week = d3.timeWeek.count(yearAgo, d.date);
       return margin.left + week * (cellSize + cellMargin);
     })
     .attr("y", (d, i) => {
@@ -98,14 +98,7 @@ onMounted(() => {
       return margin.top + day * (cellSize + cellMargin);
     })
     .attr("fill", (d) => {
-      const year = d.date.getFullYear();
-      console.log(d.date, "day");
-
-      if (year === 2025) {
-        return colorScale(d.count);
-      } else {
-        return "#fff";
-      }
+      return colorScale(d.count);
     })
     .attr("rx", 2)
     .attr("ry", 2);
