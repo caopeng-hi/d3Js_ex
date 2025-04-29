@@ -2,7 +2,7 @@
  * @Author: caopeng
  * @Date: 2025-03-20 17:04:56
  * @LastEditors: Please set LastEditors
- * @LastEditTime: 2025-04-16 16:44:26
+ * @LastEditTime: 2025-04-29 14:08:04
  * @Description: 请填写简介
  */
 
@@ -142,6 +142,14 @@ export default [
         component: () => import('@/views/date_chart/index.vue'),
         meta: {
             title: '日期图',
+        }
+    },
+    {
+        path: '/attribute_chart',
+        name: 'attribute_chart',
+        component: () => import('@/views/attribute_chart/index.vue'),
+        meta: {
+            title: '属性图',
         }
     }
 ]
