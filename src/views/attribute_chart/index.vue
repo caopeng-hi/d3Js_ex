@@ -142,6 +142,12 @@ onMounted(() => {
     })
     .on("mouseout", function () {
       d3.select(this).transition().duration(200).attr("r", 3); // 恢复原样
+    })
+    .on("mousedown", function () {
+      d3.select(this).attr("fill", "#90EE90"); // 长按时改为淡绿色
+    })
+    .on("mouseup", function () {
+      d3.select(this).attr("fill", "#ff00ee"); // 松开时恢复原色
     });
 
   // 8. 添加属性标签
