@@ -148,7 +148,62 @@ onMounted(() => {
     })
     .on("mouseup", function () {
       d3.select(this).attr("fill", "#ff00ee"); // 松开时恢复原色
-    });
+    })
+    .call(
+      d3
+        .drag()
+        .on("start", function (event, d) {
+          // 拖拽开始时改变样式
+          d3.select(this).attr("fill", "#90EE90");
+        })
+        .on("drag", function (event, d) {
+          // 计算新的值
+          const i = data.value.stats.indexOf(d);
+          const angle = angleSlice * i - Math.PI / 2;
+
+          // 计算鼠标在对应轴上的投影
+          const x = event.x;
+          const y = event.y;
+
+          // 计算鼠标相对于原点的方向
+          const mouseDirection = Math.atan2(y, x);
+          const dotDirection = Math.atan2(
+            rScale(d.value) * Math.sin(angle),
+            rScale(d.value) * Math.cos(angle)
+          );
+
+          // 判断鼠标是往原点移动还是远离原点
+          const isMovingTowardsOrigin =
+            Math.abs(mouseDirection - dotDirection) < Math.PI / 2 &&
+            Math.sqrt(x * x + y * y) < rScale(d.value);
+          console.log(isMovingTowardsOrigin);
+
+          // 根据鼠标移动方向调整 newValue
+          const delta = isMovingTowardsOrigin ? -1 : 1;
+
+          const newValue = d.value + delta * 1;
+
+          // 限制值在0到maxValue之间
+          d.value = Math.max(0, Math.min(data.value.maxValue, newValue));
+
+          // 更新圆点位置
+          d3.select(this)
+            .attr("cx", rScale(d.value) * Math.cos(angle))
+            .attr("cy", rScale(d.value) * Math.sin(angle));
+
+          // 更新雷达图区域
+          svg.select(".radar-area").attr("d", radarLine);
+          // 更新属性标签
+          svg
+            .selectAll(".legend")
+            .data(data.value.stats)
+            .text((d) => `${d.axis} (${d.value})`);
+        })
+        .on("end", function (event, d) {
+          // 拖拽结束时恢复样式
+          d3.select(this).attr("fill", "#ff00ee");
+        })
+    );
 
   // 8. 添加属性标签
   axis
