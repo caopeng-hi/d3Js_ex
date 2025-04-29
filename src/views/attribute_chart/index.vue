@@ -117,6 +117,33 @@ onMounted(() => {
     .attr("stroke", "#ff9900")
     .attr("stroke-width", 2);
 
+  // 新增：在交点处添加小圆圈
+  svg
+    .selectAll(".intersection-point")
+    .data(data.value.stats)
+    .enter()
+    .append("circle")
+    .attr("class", "intersection-point")
+    .attr(
+      "cx",
+      (d, i) => rScale(d.value) * Math.cos(angleSlice * i - Math.PI / 2)
+    )
+    .attr(
+      "cy",
+      (d, i) => rScale(d.value) * Math.sin(angleSlice * i - Math.PI / 2)
+    )
+    .attr("r", 3) // 初始半径
+    .attr("fill", "#ff00ee")
+    .attr("stroke", "#fff")
+    .attr("stroke-width", 1)
+    .style("cursor", "pointer") // 添加鼠标小手样式
+    .on("mouseover", function () {
+      d3.select(this).transition().duration(200).attr("r", 3.6); // 放大1.2倍
+    })
+    .on("mouseout", function () {
+      d3.select(this).transition().duration(200).attr("r", 3); // 恢复原样
+    });
+
   // 8. 添加属性标签
   axis
     .append("text")
