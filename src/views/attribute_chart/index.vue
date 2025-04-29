@@ -3,6 +3,9 @@
 </template>
 
 <script setup>
+/**
+ *  1.鼠标越过原点怎么处理小圆点移动的问题
+ */
 import * as d3 from "d3";
 import { ref, onMounted } from "vue";
 
