@@ -133,7 +133,7 @@ onMounted(() => {
         rScale(data.value.maxValue * 1.1) *
         Math.sin(angleSlice * i - Math.PI / 2)
     )
-    .text((d) => d.axis)
+    .text((d) => `${d.axis} (${d.value})`) // 在属性名称后添加数值
     .style("font-size", "12px")
     .style("text-anchor", "middle");
 
